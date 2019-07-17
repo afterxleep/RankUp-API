@@ -19,6 +19,7 @@ const paramSeparator = "&"
 const method = "get"
 const emailFilteringCriteria = "endava"
 const msGraphErrorPrefix = "MSGraph Error: "
+const invalidTokenError = "InvalidAuthenticationToken"
 
 module.exports = {
 
@@ -27,36 +28,44 @@ module.exports = {
   findRelevantPeople: async function(inputs) {
     const queryURL = apiURL + _.join(parameters, paramSeparator);
 
-    try {
-      const response = await fetch(queryURL, {
-        method: method,
-        headers: {
-          "Authorization": inputs.token,
-        },
-      });
-      const json = await response.json();
+    const response = await fetch(queryURL, {
+      method: method,
+      headers: {
+        "Authorization": inputs.token,
+      },
+    });
+    const json = await response.json();
 
-      if (json.error) {
-        throw new Error(msGraphErrorPrefix + json.error.message);
+    if (json.error) {
+      if (json.error.code == invalidTokenError) {
+        throw {
+          error: json.error.message,
+          code: 403
+        }
+      } else {
+        throw {
+          error: msGraphErrorPrefix + json.error.message,
+          code: 500
+        }
       }
 
-      // Clean up the results, and returns only users with endava emails
-      return json.value
-        .map(function(person) {
-          return {
-            id: person.id,
-            name: person.displayName,
-            jobTitle: person.jobTitle,
-            email: person.scoredEmailAddresses[0].address.toLowerCase(),
-            relevance: person.scoredEmailAddresses[0].relevanceScore
-          }
-        })
-        .filter(function(person) {
-          return person.email.indexOf(emailFilteringCriteria) !== -1
-        })
-
-    } catch (e) {
-      return e.message;
     }
+
+    // Clean up the results, and returns only users with endava emails
+    return json.value
+      .map(function(person) {
+        return {
+          id: person.id,
+          name: person.displayName,
+          jobTitle: person.jobTitle,
+          email: person.scoredEmailAddresses[0].address.toLowerCase(),
+          relevance: person.scoredEmailAddresses[0].relevanceScore
+        }
+      })
+      .filter(function(person) {
+        return person.email.indexOf(emailFilteringCriteria) !== -1
+      })
+
+
   }
 };

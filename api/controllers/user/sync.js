@@ -6,27 +6,38 @@ module.exports = {
   description: "Sync user details with MS APIs",
 
   exits: {
-    forbidden: {
+    unauthorized: {
       statusCode: 403,
-      message: "tes"
     },
     serverError: {
       statusCode: 500,
-    },
+    }
   },
+
 
   fn: async function(exits) {
 
+    if (!this.req.headers.authorization) {
+      throw {
+        "unauthorized": missingHeaderError
+      };
+    }
+
     try {
-      // Fetch Relevant People via Model
-      if (!this.req.headers.authorization) throw "forbidden";
       let result = await MSGraphPeople.findRelevantPeople({
         token: this.req.headers.authorization
       })
       return result
+
     } catch (e) {
-      throw {
-        serverError: e
+      if (e.code == 403) {
+        throw {
+          "unauthorized": e.error
+        }
+      } else {
+        throw {
+          "serverError": e.error
+        }
       }
     }
   }
