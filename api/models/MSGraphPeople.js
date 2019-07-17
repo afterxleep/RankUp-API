@@ -37,14 +37,15 @@ module.exports = {
     const json = await response.json();
 
     if (json.error) {
+      let error = msGraphErrorPrefix + json.error.message
       if (json.error.code == invalidTokenError) {
         throw {
-          error: json.error.message,
+          error: error,
           code: 403
         }
       } else {
         throw {
-          error: msGraphErrorPrefix + json.error.message,
+          error: error,
           code: 500
         }
       }
