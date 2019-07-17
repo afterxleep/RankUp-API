@@ -1,5 +1,4 @@
 const missingHeaderError = "An authorization header was not found.  Please provide a valid MS-Graph Auth Header"
-const invalidHeaderError = "Authorization header was invalid. Please provide a valid MS - Graph Auth Header "
 
 module.exports = {
 
@@ -10,24 +9,26 @@ module.exports = {
     forbidden: {
       statusCode: 403,
     },
+    serverError: {
+      statusCode: 500,
+    },
   },
 
   fn: async function(exits) {
-    const authHeader = this.req.headers.authorization
-    if (!authHeader) throw {
+
+    // Fetch Relevant People via Model
+    if (!this.req.headers.authorization) throw {
       forbidden: missingHeadererror
     };
-    const result = await sails.helpers.msPeople.with({
-      token: authHeader
-    });
-    if (result.error) {
+
+    try {
+      return result = await MSGraphPeople.findRelevantPeople({
+        token: this.req.headers.authorization
+      })
+    } catch (e) {
       throw {
-        forbidden: invalidHeaderError
-      };
+        serverError: e
+      }
     }
-
-
   }
-
-
 };

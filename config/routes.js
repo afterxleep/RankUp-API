@@ -10,7 +10,7 @@
 
 module.exports.routes = {
 
-  'POST /api/v1/user/sync': {
+  'GET /api/v1/user/sync': {
     action: 'user/sync'
   },
 
