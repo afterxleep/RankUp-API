@@ -41,17 +41,19 @@ module.exports = {
       }
 
       // Clean up the results, and returns only users with endava emails
-      return json.value.map(function(person) {
-        return {
-          id: person.id,
-          name: person.displayName,
-          jobTitle: person.jobTitle,
-          email: person.scoredEmailAddresses[0].address.toLowerCase(),
-          relevance: person.scoredEmailAddresses[0].relevanceScore
-        }
-      }).filter(function(person) {
-        return person.email.indexOf(emailFilteringCriteria) !== -1
-      })
+      return json.value
+        .map(function(person) {
+          return {
+            id: person.id,
+            name: person.displayName,
+            jobTitle: person.jobTitle,
+            email: person.scoredEmailAddresses[0].address.toLowerCase(),
+            relevance: person.scoredEmailAddresses[0].relevanceScore
+          }
+        })
+        .filter(function(person) {
+          return person.email.indexOf(emailFilteringCriteria) !== -1
+        })
 
     } catch (e) {
       return e.message;

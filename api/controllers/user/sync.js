@@ -8,6 +8,7 @@ module.exports = {
   exits: {
     forbidden: {
       statusCode: 403,
+      message: "tes"
     },
     serverError: {
       statusCode: 500,
@@ -16,15 +17,13 @@ module.exports = {
 
   fn: async function(exits) {
 
-    // Fetch Relevant People via Model
-    if (!this.req.headers.authorization) throw {
-      forbidden: missingHeadererror
-    };
-
     try {
-      return result = await MSGraphPeople.findRelevantPeople({
+      // Fetch Relevant People via Model
+      if (!this.req.headers.authorization) throw "forbidden";
+      let result = await MSGraphPeople.findRelevantPeople({
         token: this.req.headers.authorization
       })
+      return result
     } catch (e) {
       throw {
         serverError: e
