@@ -18,6 +18,7 @@ const parameters = [
 const paramSeparator = "&"
 const method = "get"
 const emailFilteringCriteria = "endava"
+const msGraphErrorPrefix = "MSGraph Error: "
 
 module.exports = {
 
@@ -36,7 +37,7 @@ module.exports = {
       const json = await response.json();
 
       if (json.error) {
-        throw new Error("MSGraph Error: " + json.error.message);
+        throw new Error(msGraphErrorPrefix + json.error.message);
       }
 
       // Clean up the results, and returns only users with endava emails
