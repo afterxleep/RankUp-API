@@ -10,7 +10,10 @@ const _ = require("lodash")
 const fetch = require("node-fetch")
 
 // Constants
-const apiURL = "https://graph.microsoft.com/v1.0/me/people/?"
+const apiURL = "https://graph.microsoft.com/v1.0"
+const peopleAPIPath = "/me/people/?"
+const usersPath = "/users/"
+const photoPath = "/photo/$value"
 const parameters = [
   "$select=displayName,jobTitle,scoredEmailAddresses,companyName", // Get Display Name, score email, and job title
   "$top=50" // Get top 50 users
@@ -24,14 +27,14 @@ const invalidTokenError = "InvalidAuthenticationToken"
 module.exports = {
 
   attributes: {},
-
-  findRelevantPeople: async function(inputs) {
-    const queryURL = apiURL + _.join(parameters, paramSeparator);
-
+  // Find relevant people to a token holder
+  // params: token (string) - MS Graph Access token
+  findRelevantPeople: async function(token) {
+    const queryURL = apiURL + peopleAPIPath + _.join(parameters, paramSeparator);
     const response = await fetch(queryURL, {
       method: method,
       headers: {
-        "Authorization": inputs.token,
+        "Authorization": token,
       },
     });
     const json = await response.json();
@@ -49,7 +52,6 @@ module.exports = {
           code: 500
         }
       }
-
     }
 
     // Clean up the results, and returns only users with endava emails
@@ -60,13 +62,12 @@ module.exports = {
           name: person.displayName,
           jobTitle: person.jobTitle,
           email: person.scoredEmailAddresses[0].address.toLowerCase(),
-          relevance: person.scoredEmailAddresses[0].relevanceScore
+          relevance: person.scoredEmailAddresses[0].relevanceScore,
+          image: apiURL + usersPath + person.id + photoPath
         }
       })
       .filter(function(person) {
         return person.email.indexOf(emailFilteringCriteria) !== -1
       })
-
-
   }
 };

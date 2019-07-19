@@ -1,4 +1,10 @@
+var passport = require('passport')
+
 const missingHeaderError = "An authorization header was not found.  Please provide a valid MS-Graph Auth Header"
+
+function _onPassportAuth(user, token) {
+  console.log("Authentication")
+}
 
 module.exports = {
 
@@ -24,9 +30,7 @@ module.exports = {
     }
 
     try {
-      let result = await MSGraphPeople.findRelevantPeople({
-        token: this.req.headers.authorization
-      })
+      let result = await MSGraphPeople.findRelevantPeople(this.req.headers.authorization)
       return result
 
     } catch (e) {
