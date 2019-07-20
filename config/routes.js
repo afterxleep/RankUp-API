@@ -10,8 +10,13 @@
 
 module.exports.routes = {
 
-  'GET /api/v1/user/sync': {
-    action: 'user/sync'
+  'GET /api/v1/user/me': {
+    action: 'me/data'
   },
+
+  'GET /api/v1/user/me/relevant-people': {
+    action: 'me/relevant-people'
+  },
+
 
 };
