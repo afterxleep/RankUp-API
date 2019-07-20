@@ -60,10 +60,10 @@ module.exports = {
     }
 
     let user = {
-      id: json.id,
+      msid: json.id,
       name: json.displayName,
       jobTitle: json.jobTitle,
-      mail: json.mail.toLowerCase(),
+      email: json.mail.toLowerCase(),
       image: apiURL + currentUserPath + photoPath
     }
     return user

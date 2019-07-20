@@ -8,13 +8,15 @@
     "@sailshq/lodash": "^3.10.3",
     "fs": "0.0.1-security",
     "lodash": "^4.17.14",
+    "moment": "^2.24.0",
     "node-fetch": "^2.6.0",
     "passport": "0.3.2",
     "passport-azure-ad": "^3.0.0",
     "restify": "^8.3.3",
     "sails": "^1.2.3",
     "sails-hook-orm": "^2.1.1",
-    "sails-hook-sockets": "^2.0.0"
+    "sails-hook-sockets": "^2.0.0",
+    "sails-mongo": "^1.0.1"
   },
   "devDependencies": {
     "eslint": "5.16.0"

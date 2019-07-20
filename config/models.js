@@ -78,8 +78,9 @@ module.exports.models = {
       autoUpdatedAt: true,
     },
     id: {
-      type: 'number',
-      autoIncrement: true,
+      type: 'string',
+      columnName: '_id',
+      autoIncrement: true
     },
     //--------------------------------------------------------------------------
     //  /\   Using MongoDB?
