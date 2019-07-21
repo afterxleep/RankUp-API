@@ -10,7 +10,7 @@ module.exports = {
   attributes: {
     msid: {
       type: 'string',
-      required: true
+      required: true,
     },
     name: {
       type: 'string',
@@ -39,17 +39,15 @@ module.exports = {
         smart: 0,
         trusted: 0
       }
+    },
+    received_feedbacks: {
+      collection: 'feedback',
+      via: 'to'
+    },
+    posted_feedbacks: {
+      collection: 'feedback',
+      via: 'from'
     }
-
-
-    //  ╔═╗╔╦╗╔╗ ╔═╗╔╦╗╔═╗
-    //  ║╣ ║║║╠╩╗║╣  ║║╚═╗
-    //  ╚═╝╩ ╩╚═╝╚═╝═╩╝╚═╝
-
-
-    //  ╔═╗╔═╗╔═╗╔═╗╔═╗╦╔═╗╔╦╗╦╔═╗╔╗╔╔═╗
-    //  ╠═╣╚═╗╚═╗║ ║║  ║╠═╣ ║ ║║ ║║║║╚═╗
-    //  ╩ ╩╚═╝╚═╝╚═╝╚═╝╩╩ ╩ ╩ ╩╚═╝╝╚╝╚═╝
 
   },
 

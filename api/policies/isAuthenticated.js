@@ -6,16 +6,13 @@ const currentUserPath = sails.config.msgraph.currentUserPath
 module.exports = async function(req, res, proceed) {
 
   if (!req.headers.authorization) {
-    return res.forbidden()
+    return res.status(401).send("Authentication token not provided");
   }
   try {
     let result = await MSGraphUser.me(req.headers.authorization)
     req.user = result
     return proceed()
   } catch (e) {
-    throw {
-      "serverError": e
-    }
+    return res.status(e.code).send(e.error);
   }
-
 }

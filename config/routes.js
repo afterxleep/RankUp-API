@@ -12,10 +12,10 @@ module.exports.routes = {
 
   // User Routes
   'GET /api/v1/user/me': {
-    action: 'me/me'
+    action: 'user/me'
   },
   'GET /api/v1/user/me/relevant-people': {
-    action: 'me/relevant-people'
+    action: 'user/relevant-people'
   },
 
 

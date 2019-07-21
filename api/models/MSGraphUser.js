@@ -29,7 +29,7 @@ const invalidTokenError = "InvalidAuthenticationToken"
 // params: error (MSGraphError) - MS Graph Error Message
 function handleError(error) {
   let e = msGraphErrorPrefix + error.message
-  if (e.code == invalidTokenError) {
+  if (error.code == invalidTokenError) {
     throw {
       error: e,
       code: 403
@@ -47,55 +47,55 @@ module.exports = {
   // Get Current User Details
   // params: token (string) - MS Graph Access token
   me: async function(token) {
-    const queryURL = apiURL + currentUserPath
-    const response = await fetch(queryURL, {
-      method: 'get',
-      headers: {
-        "Authorization": token,
-      },
-    });
-    const json = await response.json();
-    if (json.error) {
-      handleError(json.error)
+      const queryURL = apiURL + currentUserPath
+      const response = await fetch(queryURL, {
+        method: 'get',
+        headers: {
+          "Authorization": token,
+        },
+      });
+      const json = await response.json();
+      if (json.error) {
+        handleError(json.error)
+      }
+
+      let user = {
+        msid: json.id,
+        name: json.displayName,
+        jobTitle: json.jobTitle,
+        email: json.mail.toLowerCase(),
+        image: apiURL + currentUserPath + photoPath
+      }
+      return user
+    },
+
+    // Find relevant people to a token holder
+    // params: token (string) - MS Graph Access token
+    relevantPeople: async function(token) {
+      const queryURL = apiURL + peoplePath + _.join(parameters, paramSeparator);
+      const response = await fetch(queryURL, {
+        method: 'get',
+        headers: {
+          "Authorization": token,
+        },
+      });
+      const json = await response.json();
+
+      if (json.error) {
+        handleError(json.error)
+      }
+
+      // Clean up the results, and returns only users with endava emails
+      return json.value
+        .map(function(person) {
+          return {
+            id: person.id,
+            name: person.displayName,
+            jobTitle: person.jobTitle,
+            email: person.scoredEmailAddresses[0].address.toLowerCase(),
+            relevance: person.scoredEmailAddresses[0].relevanceScore,
+            image: apiURL + usersPath + pathSeparator + person.id + photoPath
+          }
+        })
     }
-
-    let user = {
-      msid: json.id,
-      name: json.displayName,
-      jobTitle: json.jobTitle,
-      email: json.mail.toLowerCase(),
-      image: apiURL + currentUserPath + photoPath
-    }
-    return user
-  },
-
-  // Find relevant people to a token holder
-  // params: token (string) - MS Graph Access token
-  relevantPeople: async function(token) {
-    const queryURL = apiURL + peoplePath + _.join(parameters, paramSeparator);
-    const response = await fetch(queryURL, {
-      method: 'get',
-      headers: {
-        "Authorization": token,
-      },
-    });
-    const json = await response.json();
-
-    if (json.error) {
-      handleError(json.error)
-    }
-
-    // Clean up the results, and returns only users with endava emails
-    return json.value
-      .map(function(person) {
-        return {
-          id: person.id,
-          name: person.displayName,
-          jobTitle: person.jobTitle,
-          email: person.scoredEmailAddresses[0].address.toLowerCase(),
-          relevance: person.scoredEmailAddresses[0].relevanceScore,
-          image: apiURL + usersPath + pathSeparator + person.id + photoPath
-        }
-      })
-  }
 };

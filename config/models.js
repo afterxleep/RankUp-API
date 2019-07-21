@@ -80,7 +80,7 @@ module.exports.models = {
     id: {
       type: 'string',
       columnName: '_id',
-      autoIncrement: true
+      required: true
     },
     //--------------------------------------------------------------------------
     //  /\   Using MongoDB?
