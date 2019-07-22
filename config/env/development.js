@@ -121,9 +121,11 @@ module.exports = {
    * > all environments (not just in production.)                            *
    *                                                                         *
    ***************************************************************************/
-  blueprints: {
-    shortcuts: false,
-  },
+  //blueprints: {
+  //  actions: true,
+  //  rest: true,
+  //  shortcuts: true,
+  //},
 
 
 

@@ -29,6 +29,16 @@ module.exports = {
     rank: {
       type: 'number'
     },
+    location: {
+      model: 'location',
+      unique: true,
+      required: true
+    },
+    area: {
+      model: 'area',
+      unique: true,
+      required: true
+    },
     scores: {
       type: 'json',
       defaultsTo: {
@@ -47,6 +57,10 @@ module.exports = {
     posted_feedbacks: {
       collection: 'feedback',
       via: 'from'
+    },
+    role: {
+      type: 'string',
+      defaultsTo: 'user'
     }
 
   },
