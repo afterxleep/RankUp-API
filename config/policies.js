@@ -17,6 +17,20 @@ module.exports.policies = {
    *                                                                          *
    ***************************************************************************/
 
-  '*': 'isAuthenticated'
+  // Non specified stuff, goes always innacesible
+  '*': ['isAuthenticated', 'isAdmin'],
+
+  AreaController: {
+    'find': ['isAuthenticated'],
+  },
+
+  LocationController: {
+    'find': ['isAuthenticated']
+  },
+
+  MeController: {
+    '*': ['isAuthenticated']
+  },
+
 
 };
