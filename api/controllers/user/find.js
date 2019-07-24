@@ -13,7 +13,7 @@ module.exports = {
   fn: async function() {
     var user = await User.findOne({
         msid: this.req.user.msid,
-        is_reqistered: true
+        is_registered: true
       })
       .populate("location")
       .populate("area")
@@ -25,6 +25,6 @@ module.exports = {
         data: this.req.user
       });
     }
-    return user[0]
+    return user
   }
 }
