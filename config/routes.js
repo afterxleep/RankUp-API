@@ -10,4 +10,6 @@
 
 module.exports.routes = {
 
+  'put /user': 'UserController.create'
+
 };

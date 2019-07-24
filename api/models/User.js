@@ -30,14 +30,10 @@ module.exports = {
       type: 'number'
     },
     location: {
-      model: 'location',
-      unique: true,
-      required: true
+      model: 'location'
     },
     area: {
       model: 'area',
-      unique: true,
-      required: true
     },
     scores: {
       type: 'json',
