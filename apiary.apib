@@ -1,0 +1,103 @@
+FORMAT: 1A
+HOST: http://polls.apiblueprint.org/
+
+# RankMe
+
+API Services for RankMe mobile and web apps
+
+## Area Collection [/area]
+
+### List All Company Areas [GET]
+
++ Response 200 (application/json)
+
+        [
+          {
+            "createdAt": 1563757462558,
+            "updatedAt": 1563757462558,
+            "id": "5d350b963d25dc15994fdf8e",
+            "name": "Development"
+          },
+          {
+            "createdAt": 1563757467823,
+            "updatedAt": 1563757467823,
+            "id": "5d350b9b3d25dc15994fdf8f",
+            "name": "Testing"
+          },
+          {
+            "createdAt": 1563757472897,
+            "updatedAt": 1563757472897,
+            "id": "5d350ba03d25dc15994fdf90",
+            "name": "Project Management"
+          },
+          {
+            "createdAt": 1563757483951,
+            "updatedAt": 1563757483951,
+            "id": "5d350bab3d25dc15994fdf91",
+            "name": "Applications Management"
+          },
+          {
+            "createdAt": 1563757488784,
+            "updatedAt": 1563757488784,
+            "id": "5d350bb03d25dc15994fdf92",
+            "name": "PDR"
+          },
+          {
+            "createdAt": 1563757495015,
+            "updatedAt": 1563757495015,
+            "id": "5d350bb73d25dc15994fdf93",
+            "name": "HRC"
+          },
+          {
+            "createdAt": 1563757500350,
+            "updatedAt": 1563757500350,
+            "id": "5d350bbc3d25dc15994fdf94",
+            "name": "Finance"
+          }
+        ]
+
+### Create a New Question [POST]
+
+You may create your own question using this action. It takes a JSON
+object containing a question and a collection of answers in the
+form of choices.
+
++ Request (application/json)
+
+        {
+            "question": "Favourite programming language?",
+            "choices": [
+                "Swift",
+                "Python",
+                "Objective-C",
+                "Ruby"
+            ]
+        }
+
++ Response 201 (application/json)
+
+    + Headers
+
+            Location: /questions/2
+
+    + Body
+
+            {
+                "question": "Favourite programming language?",
+                "published_at": "2015-08-05T08:40:51.620Z",
+                "choices": [
+                    {
+                        "choice": "Swift",
+                        "votes": 0
+                    }, {
+                        "choice": "Python",
+                        "votes": 0
+                    }, {
+                        "choice": "Objective-C",
+                        "votes": 0
+                    }, {
+                        "choice": "Ruby",
+                        "votes": 0
+                    }
+                ]
+            }
