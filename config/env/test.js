@@ -15,7 +15,7 @@ module.exports = {
   blueprints: {
     actions: true,
     rest: true,
-    shortcuts: true,
+    shortcuts: false,
   },
 
   security: {

@@ -28,7 +28,7 @@ module.exports.policies = {
     'find': ['isAuthenticated']
   },
 
-  UserController: {
+  MeController: {
     '*': ['isAuthenticated']
   },
 

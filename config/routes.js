@@ -10,6 +10,7 @@
 
 module.exports.routes = {
 
-  'put /user': 'UserController.create'
+  // Current User (Use the same action for create and update)
+  'put /me': 'MeController.create'
 
 };

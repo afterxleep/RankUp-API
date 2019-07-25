@@ -79,7 +79,8 @@ module.exports.models = {
     },
     id: {
       type: 'string',
-      columnName: 'msid'
+      columnName: '_id'
+
     },
     //--------------------------------------------------------------------------
     //  /\   Using MongoDB?
