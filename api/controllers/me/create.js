@@ -36,8 +36,13 @@ module.exports = {
     if (user) {
       let result = await User.update({
         msid: user.msid
-      }, u).fetch()
-      return result[0]
+      }, u)
+      let created = User.findOne({
+          msid: user.msid
+        })
+        .populate("location")
+        .populate("area")
+      return created
     } else {
       let result = await User.create(u).fetch()
       return this.res.status(201).send(result);

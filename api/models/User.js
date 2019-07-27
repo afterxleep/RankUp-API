@@ -29,13 +29,16 @@ module.exports = {
     rank: {
       type: 'number'
     },
+    score: {
+      type: 'number'
+    },
     location: {
       model: 'location'
     },
     area: {
       model: 'area',
     },
-    scores: {
+    value_scores: {
       type: 'json',
       defaultsTo: {
         average: 0,
@@ -45,14 +48,6 @@ module.exports = {
         smart: 0,
         trusted: 0
       }
-    },
-    received_feedbacks: {
-      collection: 'feedback',
-      via: 'to'
-    },
-    posted_feedbacks: {
-      collection: 'feedback',
-      via: 'from'
     },
     role: {
       type: 'string',
