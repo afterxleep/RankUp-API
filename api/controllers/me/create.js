@@ -39,7 +39,8 @@ module.exports = {
       }, u).fetch()
       return result[0]
     } else {
-      return await User.create(u).fetch()
+      let result = await User.create(u).fetch()
+      return this.res.status(201).send(result);
     }
   }
 }

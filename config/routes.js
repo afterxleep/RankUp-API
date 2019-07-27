@@ -10,7 +10,11 @@
 
 module.exports.routes = {
 
-  // Current User (Use the same action for create and update)
+  // Routes for Me Controller
+  // Required as automatic routes do not seem to work for shorter than 3 letter controllers
+  'get /me': 'MeController.find',
+  'post /me': 'MeController.create',
   'put /me': 'MeController.create'
+
 
 };
