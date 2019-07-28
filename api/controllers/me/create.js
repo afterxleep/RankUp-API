@@ -39,15 +39,6 @@ module.exports = {
     u.area = area.id
     u.is_registered = true
 
-    // Fix for MSGraph, as it might provide null values
-    // On our side, fields are strings
-    let fields = ["name", "email", "jobTitle"]
-    _.each(fields, function(f) {
-      if (u[f] == null) {
-        u[f] = ""
-      }
-    })
-
     // If the user is registered, update it
     var statusCode = 200
     if (user) {

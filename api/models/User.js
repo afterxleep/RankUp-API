@@ -11,18 +11,19 @@ module.exports = {
     msid: {
       type: 'string',
       required: true,
+      unique: true
     },
     name: {
       type: 'string',
-      required: true
+      allowNull: true
     },
     email: {
       type: 'string',
-      required: true
+      allowNull: true
     },
     jobTitle: {
       type: 'string',
-      defaultsTo: ''
+      allowNull: true
     },
     image: {
       type: 'string',
@@ -40,7 +41,7 @@ module.exports = {
     area: {
       model: 'area',
     },
-    value_scores: {
+    valueScore: {
       type: 'json',
       defaultsTo: {
         average: 0,
@@ -55,7 +56,5 @@ module.exports = {
       type: 'string',
       defaultsTo: 'user'
     }
-
   },
-
 };

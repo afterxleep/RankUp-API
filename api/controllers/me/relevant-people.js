@@ -1,3 +1,9 @@
+let _ = require("lodash")
+
+var createUsers = async function(users) {
+  console.log(usersº)
+}
+
 module.exports = {
 
   friendlyName: "Relevant People",
@@ -5,10 +11,10 @@ module.exports = {
 
   fn: async function() {
     try {
-      let result = await MSGraphUser.relevantPeople(this.req.headers.authorization)
-      return result
+      let relevantPeople = await MSGraphUser.relevantPeople(this.req.headers.authorization)
+      return relevantPeople
     } catch (e) {
-      return res.status(e.code).send(e.error);
+      return this.res.status(e.code).send(e.error);
     }
   }
 }

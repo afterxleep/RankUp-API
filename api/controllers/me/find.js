@@ -22,7 +22,16 @@ module.exports = {
           user: this.req.user
         }
       });
+    } else {
+      // Get Relevant People Data
+      try {
+        let result = await MSGraphUser.relevantPeople(this.req.headers.authorization)
+        user.relevantPeople = result
+      } catch (e) {
+        console.log(e)
+        return this.res.status(e.code).send(e.error);
+      }
+      return user
     }
-    return user
   }
 }
