@@ -12,12 +12,6 @@ module.exports = {
     cascadeOnDestroy: false,
   },
 
-  blueprints: {
-    actions: true,
-    rest: true,
-    shortcuts: true,
-  },
-
   security: {
     cors: {
       // allowOrigins: [

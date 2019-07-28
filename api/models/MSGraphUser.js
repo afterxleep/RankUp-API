@@ -24,6 +24,7 @@ const pathSeparator = "/"
 const paramSeparator = "&"
 const msGraphErrorPrefix = "MSGraph Error: "
 const invalidTokenError = "InvalidAuthenticationToken"
+const scoreFilterHigherThan = 200
 
 // Handles error for MSGraph calls
 // params: error (MSGraphError) - MS Graph Error Message
@@ -87,13 +88,14 @@ module.exports = {
 
     // Clean up the results, and returns only users with endava emails
     return json.value
+      .filter(person => person.scoredEmailAddresses[0].relevanceScore > scoreFilterHigherThan)
       .map(function(person) {
         return {
-          id: person.id,
+          msid: person.id,
           name: person.displayName,
           jobTitle: person.jobTitle,
           email: person.scoredEmailAddresses[0].address.toLowerCase(),
-          relevance: person.scoredEmailAddresses[0].relevanceScore,
+          //relevance: person.scoredEmailAddresses[0].relevanceScore,
           image: apiURL + usersPath + pathSeparator + person.id + photoPath
         }
       })

@@ -19,17 +19,11 @@ module.exports = {
       defaultsTo: ''
     },
     value: {
-      type: 'string',
-      required: true
-      // Values:  thoughtful, open, adaptable, smart, trusted
+      model: 'value'
     },
-    total_likes: {
+    pushes: {
       type: 'number',
       defaultsTo: 0
-    },
-    reply: {
-      type: 'string',
-      defaultsTo: ''
     },
     is_public: {
       type: 'boolean',

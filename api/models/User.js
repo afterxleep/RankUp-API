@@ -11,35 +11,37 @@ module.exports = {
     msid: {
       type: 'string',
       required: true,
+      unique: true
     },
     name: {
       type: 'string',
-      required: true
+      allowNull: true
     },
     email: {
       type: 'string',
-      required: true
+      allowNull: true
     },
     jobTitle: {
-      type: 'string'
+      type: 'string',
+      allowNull: true
     },
     image: {
-      type: 'string'
+      type: 'string',
+      defaultsTo: ''
     },
     rank: {
       type: 'number'
     },
+    score: {
+      type: 'number'
+    },
     location: {
-      model: 'location',
-      unique: true,
-      required: true
+      model: 'location'
     },
     area: {
       model: 'area',
-      unique: true,
-      required: true
     },
-    scores: {
+    valueScore: {
       type: 'json',
       defaultsTo: {
         average: 0,
@@ -50,19 +52,9 @@ module.exports = {
         trusted: 0
       }
     },
-    received_feedbacks: {
-      collection: 'feedback',
-      via: 'to'
-    },
-    posted_feedbacks: {
-      collection: 'feedback',
-      via: 'from'
-    },
     role: {
       type: 'string',
       defaultsTo: 'user'
     }
-
   },
-
 };
