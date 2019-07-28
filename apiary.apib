@@ -1,103 +1,721 @@
 FORMAT: 1A
-HOST: http://polls.apiblueprint.org/
+HOST: https://rankme-test.herokuapp.com
 
-# RankMe
+# Rank Me
 
-API Services for RankMe mobile and web apps
+Api services for RankMe Apps
 
-## Area Collection [/area]
+# Data Structures
 
-### List All Company Areas [GET]
+## GeoLocation (object)
++ type (string) - 'Point'
++ coordinates (array) - Array of longitude/latitude
 
-+ Response 200 (application/json)
+## CompanyArea (object)
++ createdAt (number) - Creation date in ms
++ updatedAt (number) - Last date in ms
++ id (string) - Database ID
++ name (string, required) - Area Name
 
-        [
-          {
-            "createdAt": 1563757462558,
-            "updatedAt": 1563757462558,
-            "id": "5d350b963d25dc15994fdf8e",
-            "name": "Development"
-          },
-          {
-            "createdAt": 1563757467823,
-            "updatedAt": 1563757467823,
-            "id": "5d350b9b3d25dc15994fdf8f",
-            "name": "Testing"
-          },
-          {
-            "createdAt": 1563757472897,
-            "updatedAt": 1563757472897,
-            "id": "5d350ba03d25dc15994fdf90",
-            "name": "Project Management"
-          },
-          {
-            "createdAt": 1563757483951,
-            "updatedAt": 1563757483951,
-            "id": "5d350bab3d25dc15994fdf91",
-            "name": "Applications Management"
-          },
-          {
-            "createdAt": 1563757488784,
-            "updatedAt": 1563757488784,
-            "id": "5d350bb03d25dc15994fdf92",
-            "name": "PDR"
-          },
-          {
-            "createdAt": 1563757495015,
-            "updatedAt": 1563757495015,
-            "id": "5d350bb73d25dc15994fdf93",
-            "name": "HRC"
-          },
-          {
-            "createdAt": 1563757500350,
-            "updatedAt": 1563757500350,
-            "id": "5d350bbc3d25dc15994fdf94",
-            "name": "Finance"
-          }
-        ]
+## OfficeLocation (object)
++ createdAt (number) - Creation date in ms
++ updatedAt (number) - Last date in ms
++ id (string) - Database ID
++ name (string, required) - Location Name
++ geolocation (GeoLocation) - GeoJSON point object
 
-### Create a New Question [POST]
+## CompanyValue (object)
++ createdAt (number) - Creation date in ms
++ updatedAt (number) - Last date in ms
++ id (string) - Database Id of the user
++ name (string) - Value name
++ image (string) - Value image
 
-You may create your own question using this action. It takes a JSON
-object containing a question and a collection of answers in the
-form of choices.
+## FeedbackItem (object)
++ createdAt (number) - Creation date in ms
++ updatedAt (number) - Last date in ms
++ id (string) - Feedback Database ID
++ from (SimplifiedUser) - Originating User Object
++ to (SimplifiedUser) - Destination User Object
++ value (CompanyValue) - Company Value Item
++ comment (string) - Feedback Comment
++ is_public (boolean)
++ is_pinned (boolean)
++ pushes (number)
++ pushes_by_user (boolean) - Wether logged in user already liked this item
 
-+ Request (application/json)
+## SimplifiedUser (object)
++ id (string) - Database Id of the user
++ msid (string) - Microsoft ID of the user
++ name (string)
++ jobTitle (string)
++ email (string)
++ image (string)
 
-        {
-            "question": "Favourite programming language?",
-            "choices": [
-                "Swift",
-                "Python",
-                "Objective-C",
-                "Ruby"
-            ]
-        }
+## UserPayload (object)
++ location (string) - Database ID of the related location object
++ area (string) - Database ID of the related area object 
 
-+ Response 201 (application/json)
+## FullUser (object)
++ is_registered (boolean) - Wether the user is fully registered in the local DB
++ id (string) - Database ID
++ msid (string) - Microsoft Graph ID
++ name (string)
++ email (string)
++ jobTitle (string)
++ image (string)
++ location (object) - Company Location Object
++ area (object) - Company Area Object
++ role (string) - Role of the user in the system
++ rank (number) - Rank in Endava, (Lower is better)
++ score (number) - Current Score in points (Higher is better)
++ valueScores (object)
++ scores.*** (number) - Score for each of the values
++ feedbacks_received (number) - Total Feedbacks received
++ feedbacks_given (number) - Total Feedbacks given
++ last_feedback_received (number) - Last FB Received Date in ms
++ last_feedback_given (number) - Last FB Given Date in ms
+
+
+## Group Company Area
+
+### Company Area Collection [/area]
+
+#### List All Company Areas [GET]
+
++ Request
 
     + Headers
 
-            Location: /questions/2
+            Authorization: Bearer MSGRAPH_TOKEN
+            
+    + Attributes (CompanyArea)
+        
+
+
++ Response 200 (application/json)
+
+    + Body
+
+            [
+              {
+                "createdAt": 1563757462558,
+                "updatedAt": 1563757462558,
+                "id": "5d350b963d25dc15994fdf8e",
+                "name": "Development"
+              },
+              {
+                "createdAt": 1563757467823,
+                "updatedAt": 1563757467823,
+                "id": "5d350b9b3d25dc15994fdf8f",
+                "name": "Testing"
+              },
+              {
+                "createdAt": 1563757472897,
+                "updatedAt": 1563757472897,
+                "id": "5d350ba03d25dc15994fdf90",
+                "name": "Project Management"
+              },
+              {
+                "createdAt": 1563757483951,
+                "updatedAt": 1563757483951,
+                "id": "5d350bab3d25dc15994fdf91",
+                "name": "Applications Management"
+              },
+              {
+                "createdAt": 1563757488784,
+                "updatedAt": 1563757488784,
+                "id": "5d350bb03d25dc15994fdf92",
+                "name": "PDR"
+              },
+              {
+                "createdAt": 1563757495015,
+                "updatedAt": 1563757495015,
+                "id": "5d350bb73d25dc15994fdf93",
+                "name": "HRC"
+              },
+              {
+                "createdAt": 1563757500350,
+                "updatedAt": 1563757500350,
+                "id": "5d350bbc3d25dc15994fdf94",
+                "name": "Finance"
+              }
+            ]
+
+
+#### Create new company area [POST]
+Note: Company area creation is limited to admin users
+
++ Request (application/json; charset=utf-8)
+
+    + Headers
+
+            Authorization: Bearer MSGRAPH_TOKEN
+    
+    + Attributes
+
+        + name (required)
+    
+    + Body
+
+            {
+                "name": "Finance"
+            }
+
++ Response 200 (text/html; charset=utf-8)
+
+ + Body
+
+            {
+                "createdAt": 1563757467823,
+                "updatedAt": 1563757467823,
+                "id": "5d350b9b3d25dc15994fdf8f",
+                "name": "Finance"
+            }
+
+
+### Company Area Record [/area/{area_id}]
+
++ Parameters
+    + area_id - ID of a company area
+
+#### Delete (archive) company area [DELETE]
+Note: Company area deletion is limited to admin users
+
++ Request (application/json; charset=utf-8)
+
+    + Headers
+
+            Authorization: Bearer MSGRAPH_TOKEN
+
+    + Body
+
++ Response 200 (text/html; charset=utf-8)
+
+
+## Group Office Location
+
+### Location Collection [/location]
+
+#### List All Company Locations [GET]
+
++ Request
+
+    + Headers
+
+            Authorization: MSGRAPH_TOKEN
+            
+    + Attributes (OfficeLocation)
+
+
++ Response 200 (application/json; charset=utf-8)
+
+    + Body
+
+            [
+              {
+                "createdAt": 1563754289652,
+                "updatedAt": 1563754289652,
+                "id": "5d34ff31fca3b9104a74c2af",
+                "name": "Belgrade",
+                "geolocation": {
+                  "type": "Point",
+                  "coordinates": [
+                    20.423133,
+                    44.807488
+                  ]
+                }
+              },
+              {
+                "createdAt": 1563754385516,
+                "updatedAt": 1563754385516,
+                "id": "5d34ff91fca3b9104a74c2b0",
+                "name": "Bogotá",
+                "geolocation": {
+                  "type": "Point",
+                  "coordinates": [
+                    -74.04497,
+                    4.678666
+                  ]
+                }
+              },
+              {
+                "createdAt": 1563754457430,
+                "updatedAt": 1563754457430,
+                "id": "5d34ffd9fca3b9104a74c2b1",
+                "name": "Bucharest",
+                "geolocation": {
+                  "type": "Point",
+                  "coordinates": [
+                    26.053921,
+                    44.429948
+                  ]
+                }
+              }
+            ]
+
+
+#### Create new location [POST]
+Note: Location creation is limited to admin users
+
++ Request (application/json; charset=utf-8)
+
+    + Headers
+
+            Authorization: Bearer MSGRAPH_TOKEN
+            
+    + Attributes
+        + name (string, required) - Location Name
+        + geolocation (GeoLocation) - GeoJSON point object
+
 
     + Body
 
             {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
-                    {
-                        "choice": "Swift",
-                        "votes": 0
-                    }, {
-                        "choice": "Python",
-                        "votes": 0
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 0
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 0
-                    }
-                ]
+                "name": "Seattle",
+                "geolocation": {
+                    "latitude": 47.775189,
+                    "longitude": -122.183675
+                }
             }
+
++ Response 401 (text/html; charset=utf-8)
+
+    + Body
+
+            {
+                "name": "Seattle",
+                "geolocation": {
+                    "latitude": 47.775189,
+                    "longitude": -122.183675
+                }
+            }
+
+
+### Location Record [/location/{location_id}]
+
++ Parameters
+    + location_id - ID of a location
+
+#### Delete (archive) Location [DELETE]
+Note: Location deletion is limited to admin users
+
++ Request (application/json; charset=utf-8)
+
+    + Headers
+
+            Authorization: Bearer MSGRAPH_TOKEN
+
++ Response 200 (text/html; charset=utf-8)
+
+
+## Group Company Values
+
+### Company Value Collection [/value]
+
+#### List All Company Values [GET]
+
++ Request
+
+    + Headers
+
+            Authorization: Bearer MSGRAPH_TOKEN
+            
+    + Attributes (CompanyValue)
+        
+
++ Response 200 (application/json)
+
+    + Body
+
+            [
+              {
+                "createdAt": 1564195292534,
+                "updatedAt": 1564195292534,
+                "id": "5d3bb9dca0f903bd7abab435",
+                "name": "Open",
+                "image": "open.png"
+              },
+              {
+                "createdAt": 1564195323971,
+                "updatedAt": 1564195323971,
+                "id": "5d3bb9fba0f903bd7abab436",
+                "name": "Thoughtful",
+                "image": "thoughtful.png"
+              },
+              {
+                "createdAt": 1564195338746,
+                "updatedAt": 1564195338746,
+                "id": "5d3bba0aa0f903bd7abab437",
+                "name": "Adaptable",
+                "image": "adaptable.png"
+              },
+              {
+                "createdAt": 1564195349766,
+                "updatedAt": 1564195349766,
+                "id": "5d3bba15a0f903bd7abab438",
+                "name": "Smart",
+                "image": "smart.png"
+              },
+              {
+                "createdAt": 1564195452008,
+                "updatedAt": 1564195452008,
+                "id": "5d3bba7ca0f903bd7abab439",
+                "name": "Trusted",
+                "image": "trusted.png"
+              }
+            ]
+
+
+#### Create new company value [POST]
+Note: Value area creation is limited to admin users
+
++ Request (application/json; charset=utf-8)
+
+    + Headers
+
+            Authorization: Bearer MSGRAPH_TOKEN
+
+    + Attributes
+        + id (string) - Database ID
+        + name (string, required) - Value Name
+        + image (string, required) - Value image file name
+    
+    + Body
+
+            {
+                "name": "Trusted",
+                "image": "test.png",
+            }
+
++ Response 200 (text/html; charset=utf-8)
+
+ + Body
+
+            {
+                "createdAt": 1563757467823,
+                "updatedAt": 1563757467823,
+                "id": "5d350b9b3d25dc15994fdf8f",
+                "name": "Trusted",
+                "image": "test.png"
+            }
+
+
+### Company Value Record [/value/{value_id}]
+
++ Parameters
+    + value_id - ID of a company value
+
+#### Delete (archive) Company Value [DELETE]
+Note: Company Value deletion is limited to admin users
+
++ Request (application/json; charset=utf-8)
+
+    + Headers
+
+            Authorization: Bearer MSGRAPH_TOKEN
+
+    + Body
+
+
++ Response 200 (text/html; charset=utf-8)
+
+## Group Logged In User
+
+### User Profile [/me]
+Actions for currently logged in user are based on the provided MSGRAPH token information
+
+#### Get currently logged in user [GET]
+
++ Request
+
+    + Headers
+
+            Authorization: Bearer MSGRAPH_TOKEN
+            
+    + Attributes (FullUser)
+
+
++ Response 200 (application/json; charset=utf-8)
+
+    Returns the user information
+
+    + Body
+
+            {
+              "is_registered": true,
+              "createdAt": 1563946507335,
+              "updatedAt": 1563946507335,
+              "id": "5d37ee0b68f99c7a7d5779f6",
+              "msid": "99a3971a-8d39-4e06-93c4-c674b2b3a272",
+              "name": "Daniel Bernal",
+              "email": "daniel.bernal@endava.com",
+              "jobTitle": "Head of Development",
+              "image": "https://graph.microsoft.com/v1.0/me/photo/$value",
+              "rank": 0,
+              "scores": {
+                "average": 0,
+                "thoughtful": 0,
+                "open": 0,
+                "adaptable": 0,
+                "smart": 0,
+                "trusted": 0
+              },
+              "role": "user",
+              "location": {
+                "createdAt": 1563754289652,
+                "updatedAt": 1563754289652,
+                "id": "5d34ff31fca3b9104a74c2af",
+                "name": "Belgrade",
+                "geolocation": {
+                  "type": "Point",
+                  "coordinates": [
+                    20.423133,
+                    44.807488
+                  ]
+                }
+              },
+              "area": {
+                "createdAt": 1563757467823,
+                "updatedAt": 1563757467823,
+                "id": "5d350b9b3d25dc15994fdf8f",
+                "name": "Testing"
+              }
+            }
+
+
++ Response 404 (application/json; charset=utf-8)
+
+    Returned if the user is not found in the local database.
+    The current user information from MSGraph is returned as part of 
+    the error data
+
+    + Body
+    
+            {
+              "code": 404,
+              "error": "User is not registered in the database.  Please register",
+              "data": {
+                "user": {
+                  "msid": "99a3971a-8d39-4e06-93c4-c674b2b3a272",
+                  "name": "Daniel Bernal",
+                  "jobTitle": "Head of Development",
+                  "email": "daniel.bernal@endava.com",
+                  "image": "https://graph.microsoft.com/v1.0/me/photo/$value"
+                }
+              }
+            }
+
+#### Create a new local user from MSGRAPH Token [POST]
+
++ Request (application/json; charset=utf-8)
+
+    + Headers
+
+            Authorization: Bearer MSGRAPH_TOKEN
+            
+    + Attributes (UserPayload)
+    
+    + Body
+
+            {
+                "location": "5d34ff31fca3b9104a74c2af",
+                "area": "5d350b9b3d25dc15994fdf8f"
+            }
+
++ Response 201 (application/json; charset=utf-8)
+
+    + Body
+
+            {
+              "is_registered": true,
+              "createdAt": 1563946507335,
+              "updatedAt": 1563946507335,
+              "id": "5d37ee0b68f99c7a7d5779f6",
+              "msid": "99a3971a-8d39-4e06-93c4-c674b2b3a272",
+              "name": "Daniel Bernal",
+              "email": "daniel.bernal@endava.com",
+              "jobTitle": "Head of Development",
+              "image": "https://graph.microsoft.com/v1.0/me/photo/$value",
+              "rank": 0,
+              "scores": {
+                "average": 0,
+                "thoughtful": 0,
+                "open": 0,
+                "adaptable": 0,
+                "smart": 0,
+                "trusted": 0
+              },
+              "role": "user",
+              "location": {
+                "createdAt": 1563754289652,
+                "updatedAt": 1563754289652,
+                "id": "5d34ff31fca3b9104a74c2af",
+                "name": "Belgrade",
+                "geolocation": {
+                  "type": "Point",
+                  "coordinates": [
+                    20.423133,
+                    44.807488
+                  ]
+                }
+              },
+              "area": {
+                "createdAt": 1563757467823,
+                "updatedAt": 1563757467823,
+                "id": "5d350b9b3d25dc15994fdf8f",
+                "name": "Testing"
+              }
+            }
+
+    
++ Response 404 (application/json; charset=utf-8)
+
+    Returned if a user was not found for the given userId
+
+    + Body
+
+        
+
+#### Update a existing local user from MSGRAPH Token [PUT]
+
++ Request (application/json; charset=utf-8)
+
+    + Headers
+
+            Authorization: Bearer MSGRAPH_DATA
+            
+    + Attributes (UserPayload)
+    
+    + Body
+
+            {
+                "location": "5d34ff31fca3b9104a74c2af",
+                "area": "5d350b9b3d25dc15994fdf8f"
+            }
+
++ Response 200 (text/plain; charset=utf-8)
+
+    + Body
+
+             {
+              "is_registered": true,
+              "createdAt": 1563946507335,
+              "updatedAt": 1563946507335,
+              "id": "5d37ee0b68f99c7a7d5779f6",
+              "msid": "99a3971a-8d39-4e06-93c4-c674b2b3a272",
+              "name": "Daniel Bernal",
+              "email": "daniel.bernal@endava.com",
+              "jobTitle": "Head of Development",
+              "image": "https://graph.microsoft.com/v1.0/me/photo/$value",
+              "rank": 0,
+              "scores": {
+                "average": 0,
+                "thoughtful": 0,
+                "open": 0,
+                "adaptable": 0,
+                "smart": 0,
+                "trusted": 0
+              },
+              "role": "user",
+              "location": {
+                "createdAt": 1563754289652,
+                "updatedAt": 1563754289652,
+                "id": "5d34ff31fca3b9104a74c2af",
+                "name": "Belgrade",
+                "geolocation": {
+                  "type": "Point",
+                  "coordinates": [
+                    20.423133,
+                    44.807488
+                  ]
+                }
+              },
+              "area": {
+                "createdAt": 1563757467823,
+                "updatedAt": 1563757467823,
+                "id": "5d350b9b3d25dc15994fdf8f",
+                "name": "Testing"
+              }
+            }
+
+
+### Relevant Contacts [/people/relevant-contacts]
+Obtain relevant contacts for the currently logged in user with priority ranking and diverse filtering options
+
+#### Get Relevant Contacts [GET]
+
++ Request
+
+    + Headers
+
+            Authorization: Bearer MSGRAPH_TOKEN
+            
+    + Attributes (SimplifiedUser)
+
+
++ Response 200 (application/json; charset=utf-8)
+
+    + Body
+            
+            [
+                {
+                    "msid": "3593590b-023e-4098-8faa-489ec9443f28",
+                    "name": "Corneliu Bohantov",
+                    "jobTitle": "Head of Architecture",
+                    "email": "corneliu.bohantov@endava.com",
+                    "image": "https://graph.microsoft.com/v1.0/users/3593590b-023e-4098-8faa-489ec9443f28/photo/$value"
+                },
+                {
+                    "msid": "7bce17f9-916d-4588-a940-f519269d5fb5",
+                    "name": "Elena Plop",
+                    "jobTitle": "DU Manager",
+                    "email": "elena.plop@endava.com",
+                    "image": "https://graph.microsoft.com/v1.0/users/7bce17f9-916d-4588-a940-f519269d5fb5/photo/$value"
+                },
+                {
+                    "msid": "7bce17f9-916d-4588-a940-f519269d5fb5",
+                    "name": "Kumail Jetha",
+                    "jobTitle": "Regional Manager",
+                    "email": "kumail.jetha@endava.com",
+                    "image": "https://graph.microsoft.com/v1.0/users/8047e6cc-d858-47ee-a6ba-d8c11e02f4d7/photo/$value"
+                }
+              ]
+
+## Group Feedback
+(WORK IN PROGRESS -- NOT AVAILABLE FOR TESTING)
+
+### Feedback Collection [/feedback?from={from}&to={to}&page={page}&value={value}&user={user}&private={private}&pinned={pinned}]
+Feedback list and actions
+
+#### Get Feedbback feed [GET]
+Returns a paginated feed for feedbacks sorted chronologically and filters by provided parameters. <br>
+- If no filters provided, will return the last 100 feedback items in the database.<br>
+- Service will return private feedbacks for the currently logged in user
+
++ Request
+
+    + Headers
+
+            Authorization: Bearer MSGRAPH_DATA
+            
++ Parameters
+    + from (number, optional) - Start date in ms
+    + to (number, optional) - End date in ms
+    + page (number, optional) - Page number
+    + value (string, optional) - Value filter (Value ID)
+    + user (string, optional) - User filter (User ID)
+    + private (boolean, optional) - Include private feedbacks (For current user only)
+    + pinned (boolean, optional) - Display only pinned items (Lmited to 10 by default)
+
++ Attributes
+    + feedbacks (array)
+        +  (FeedbackItem)
+    + total_records (number)
+    + page (number)
+    + total_pages (number)
+
+
++ Response 200 (application/json; charset=utf-8)
+
+    + Body
