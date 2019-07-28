@@ -1,3 +1,10 @@
+const locationError = "Provided location is invalid"
+const locationModel = "location"
+const areaError = "Provided area is invalid"
+const areaModel = "area"
+
+let _ = require('lodash')
+
 module.exports = {
 
   friendlyName: "Create a local user",
@@ -9,12 +16,12 @@ module.exports = {
     let location = await Location.findOne({
       id: this.req.body.location
     })
-    if (!location) return this.res.status(400).send("Provided location is invalid");
+    if (!location) return this.res.status(400).send(locationError);
 
     let area = await Area.findOne({
       id: this.req.body.area
     })
-    if (!area) return this.res.status(400).send("Provided area is invalid");
+    if (!area) return this.res.status(400).send(areaError);
 
     var user = await User.findOne({
       msid: this.req.user.msid,
@@ -24,7 +31,7 @@ module.exports = {
     // By default set the user data to the Session info
     var u = this.req.user
 
-    // If we already have a user, use that info
+    // If we've found a user, use it's info
     if (user) {
       u = user
     }
@@ -32,20 +39,32 @@ module.exports = {
     u.area = area.id
     u.is_registered = true
 
+    // Fix for MSGraph, as it might provide null values
+    // On our side, fields are strings
+    let fields = ["name", "email", "jobTitle"]
+    _.each(fields, function(f) {
+      if (u[f] == null) {
+        u[f] = ""
+      }
+    })
+
     // If the user is registered, update it
+    var statusCode = 200
     if (user) {
       let result = await User.update({
         msid: user.msid
       }, u)
-      let created = User.findOne({
-          msid: user.msid
-        })
-        .populate("location")
-        .populate("area")
-      return created
     } else {
-      let result = await User.create(u).fetch()
-      return this.res.status(201).send(result);
+      let result = await User.create(u)
+      statusCode = 201
     }
+
+    // Return the user information
+    let r = await User.findOne({
+        msid: u.msid
+      })
+      .populate(locationModel)
+      .populate(areaModel)
+    return this.res.status(statusCode).send(r);
   }
 }

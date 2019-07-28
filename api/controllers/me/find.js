@@ -1,3 +1,5 @@
+const notRegisteredError = "User is not registered in the database.  Please register"
+
 module.exports = {
 
   friendlyName: "User Information",
@@ -15,7 +17,7 @@ module.exports = {
       let u = this.req.user
       return this.res.status(404).send({
         code: 404,
-        error: "User is not registered in the database.  Please register",
+        error: notRegisteredError,
         data: {
           user: this.req.user
         }

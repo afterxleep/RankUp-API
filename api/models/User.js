@@ -21,10 +21,12 @@ module.exports = {
       required: true
     },
     jobTitle: {
-      type: 'string'
+      type: 'string',
+      defaultsTo: ''
     },
     image: {
-      type: 'string'
+      type: 'string',
+      defaultsTo: ''
     },
     rank: {
       type: 'number'
