@@ -14,25 +14,34 @@ module.exports = {
     to: {
       model: 'user'
     },
-    text: {
-      type: 'string',
-      defaultsTo: ''
-    },
     value: {
       model: 'value'
     },
-    pushes: {
+    comment: {
+      type: 'string',
+      defaultsTo: ''
+    },
+    isPublic: {
+      type: 'boolean'
+    },
+    isPinned: {
+      type: 'boolean'
+    },
+    likes: {
       type: 'number',
       defaultsTo: 0
     },
-    is_public: {
-      type: 'boolean',
-      defaultsTo: false
+    isLikedByuser: {
+      type: 'boolean'
     },
-    is_pinned: {
-      type: 'boolean',
-      defaultsTo: false
+    flags: {
+      type: 'number'
+    },
+    isFlaggedByUser: {
+      type: 'boolean'
+    },
+    isPositive: {
+      type: 'boolean'
     }
-  },
-
+  }
 };

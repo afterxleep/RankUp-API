@@ -35,16 +35,24 @@ module.exports = {
     score: {
       type: 'number'
     },
+    points: {
+      type: 'number'
+    },
+    bonuses: {
+      type: 'number'
+    },
+    deductions: {
+      type: 'number'
+    },
     location: {
       model: 'location'
     },
     area: {
       model: 'area',
     },
-    valueScore: {
+    valuePoints: {
       type: 'json',
       defaultsTo: {
-        average: 0,
         thoughtful: 0,
         open: 0,
         adaptable: 0,

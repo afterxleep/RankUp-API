@@ -54,7 +54,7 @@ Api services for RankMe Apps
 
 ## UserPayload (object)
 + location (string) - Database ID of the related location object
-+ area (string) - Database ID of the related area object 
++ area (string) - Database ID of the related area object
 
 ## FullUser (object)
 + is_registered (boolean) - Wether the user is fully registered in the local DB
@@ -88,9 +88,9 @@ Api services for RankMe Apps
     + Headers
 
             Authorization: Bearer MSGRAPH_TOKEN
-            
+
     + Attributes (CompanyArea)
-        
+
 
 
 + Response 200 (application/json)
@@ -151,11 +151,11 @@ Note: Company area creation is limited to admin users
     + Headers
 
             Authorization: Bearer MSGRAPH_TOKEN
-    
+
     + Attributes
 
         + name (required)
-    
+
     + Body
 
             {
@@ -204,7 +204,7 @@ Note: Company area deletion is limited to admin users
     + Headers
 
             Authorization: MSGRAPH_TOKEN
-            
+
     + Attributes (OfficeLocation)
 
 
@@ -263,7 +263,7 @@ Note: Location creation is limited to admin users
     + Headers
 
             Authorization: Bearer MSGRAPH_TOKEN
-            
+
     + Attributes
         + name (string, required) - Location Name
         + geolocation (GeoLocation) - GeoJSON point object
@@ -320,9 +320,9 @@ Note: Location deletion is limited to admin users
     + Headers
 
             Authorization: Bearer MSGRAPH_TOKEN
-            
+
     + Attributes (CompanyValue)
-        
+
 
 + Response 200 (application/json)
 
@@ -380,7 +380,7 @@ Note: Value area creation is limited to admin users
         + id (string) - Database ID
         + name (string, required) - Value Name
         + image (string, required) - Value image file name
-    
+
     + Body
 
             {
@@ -432,7 +432,7 @@ Actions for currently logged in user are based on the provided MSGRAPH token inf
     + Headers
 
             Authorization: Bearer MSGRAPH_TOKEN
-            
+
     + Attributes (FullUser)
 
 
@@ -487,11 +487,11 @@ Actions for currently logged in user are based on the provided MSGRAPH token inf
 + Response 404 (application/json; charset=utf-8)
 
     Returned if the user is not found in the local database.
-    The current user information from MSGraph is returned as part of 
+    The current user information from MSGraph is returned as part of
     the error data
 
     + Body
-    
+
             {
               "code": 404,
               "error": "User is not registered in the database.  Please register",
@@ -513,9 +513,9 @@ Actions for currently logged in user are based on the provided MSGRAPH token inf
     + Headers
 
             Authorization: Bearer MSGRAPH_TOKEN
-            
+
     + Attributes (UserPayload)
-    
+
     + Body
 
             {
@@ -568,14 +568,14 @@ Actions for currently logged in user are based on the provided MSGRAPH token inf
               }
             }
 
-    
+
 + Response 404 (application/json; charset=utf-8)
 
     Returned if a user was not found for the given userId
 
     + Body
 
-        
+
 
 #### Update a existing local user from MSGRAPH Token [PUT]
 
@@ -584,9 +584,9 @@ Actions for currently logged in user are based on the provided MSGRAPH token inf
     + Headers
 
             Authorization: Bearer MSGRAPH_DATA
-            
+
     + Attributes (UserPayload)
-    
+
     + Body
 
             {
@@ -650,14 +650,14 @@ Obtain relevant contacts for the currently logged in user with priority ranking 
     + Headers
 
             Authorization: Bearer MSGRAPH_TOKEN
-            
+
     + Attributes (SimplifiedUser)
 
 
 + Response 200 (application/json; charset=utf-8)
 
     + Body
-            
+
             [
                 {
                     "msid": "3593590b-023e-4098-8faa-489ec9443f28",
@@ -698,7 +698,7 @@ Returns a paginated feed for feedbacks sorted chronologically and filters by pro
     + Headers
 
             Authorization: Bearer MSGRAPH_DATA
-            
+
 + Parameters
     + from (number, optional) - Start date in ms
     + to (number, optional) - End date in ms

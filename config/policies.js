@@ -34,7 +34,7 @@ module.exports.policies = {
 
   FeedbackController: {
     'find': ['isAuthenticated'],
-    'create': ['isAuthenticated']
+    //'create': ['isAuthenticated']
   },
 
   ValueController: {
