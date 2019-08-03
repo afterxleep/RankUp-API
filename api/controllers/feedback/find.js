@@ -59,13 +59,9 @@ module.exports = {
         .populate('from')
         .populate('to')
         .populate('value'),
-
       totalRecords: await Feedback.count(),
       skipped: inputs.skip,
       limit: inputs.limit
     }
-
   }
-
-
 };

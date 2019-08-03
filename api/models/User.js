@@ -65,4 +65,9 @@ module.exports = {
       defaultsTo: 'user'
     }
   },
+
+  getFeedbackStats: async function(msid) {
+
+  }
+
 };
