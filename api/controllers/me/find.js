@@ -32,16 +32,13 @@ module.exports = {
       });
     }
 
-    // Get feedback status
+    // Feedback Stats
     user.feedbacksReceived = await Feedback.count({
       'to': user.id
     })
-
     user.feedbacksGiven = await Feedback.count({
       'from': user.id
     })
-
-    // Last feedback Received and given
     let lastFeedbackReceived = await Feedback.findOne({
       'to': user.id
     })

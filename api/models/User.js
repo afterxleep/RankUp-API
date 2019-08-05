@@ -32,18 +32,6 @@ module.exports = {
     rank: {
       type: 'number'
     },
-    score: {
-      type: 'number'
-    },
-    points: {
-      type: 'number'
-    },
-    bonuses: {
-      type: 'number'
-    },
-    deductions: {
-      type: 'number'
-    },
     location: {
       model: 'location'
     },
@@ -52,22 +40,15 @@ module.exports = {
     },
     valuePoints: {
       type: 'json',
-      defaultsTo: {
-        thoughtful: 0,
-        open: 0,
-        adaptable: 0,
-        smart: 0,
-        trusted: 0
-      }
+      defaultsTo: {}
     },
     role: {
       type: 'string',
       defaultsTo: 'user'
+    },
+    is_registered: {
+      type: 'boolean',
+      defaultsTo: false
     }
-  },
-
-  getFeedbackStats: async function(msid) {
-
   }
-
 };

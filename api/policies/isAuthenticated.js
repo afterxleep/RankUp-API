@@ -11,6 +11,15 @@ module.exports = async function(req, res, proceed) {
   try {
     let result = await MSGraphUser.me(req.headers.authorization)
     req.user = result
+
+    // Look for the user in the local DB and return if exists
+    let localUser = await User.findOne({
+      'msid': req.user.msid
+    })
+    if (localUser) {
+      req.user = localUser
+    }
+
     return proceed()
   } catch (e) {
     return res.status(e.code).send(e.error);

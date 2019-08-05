@@ -12,10 +12,10 @@ const fetch = require("node-fetch")
 // Constants
 const apiURL = sails.config.msgraph.apiURL
 const currentUserPath = sails.config.msgraph.currentUserPath
-const peoplePath = currentUserPath + sails.config.msgraph.peoplePath
 const usersPath = sails.config.msgraph.usersPath
+const peoplePath = currentUserPath + sails.config.msgraph.peoplePath
 const photoPath = sails.config.msgraph.photoPath
-const parameters = [
+const relevantUsersParameters = [
   "$select=displayName,jobTitle,scoredEmailAddresses,companyName", // Get Display Name, score email, and job title
   "$top=50", // Get top 50 users
   "$filter=personType/class eq 'Person' and personType/subclass eq 'OrganizationUser'" // Filter to active users from current organization
@@ -24,23 +24,45 @@ const pathSeparator = "/"
 const paramSeparator = "&"
 const msGraphErrorPrefix = "MSGraph Error: "
 const invalidTokenError = "InvalidAuthenticationToken"
+const resourceNotFoundError = "Request_ResourceNotFound"
 const scoreFilterHigherThan = 200
 
 // Handles error for MSGraph calls
 // params: error (MSGraphError) - MS Graph Error Message
-function handleError(error) {
+let handleError = function(error) {
   let e = msGraphErrorPrefix + error.message
-  if (error.code == invalidTokenError) {
-    throw {
-      error: e,
-      code: 401
-    }
-  } else {
-    throw {
-      error: e,
-      code: 500
-    }
+
+  switch (error.code) {
+    case invalidTokenError:
+      throw {
+        error: e,
+        code: 401
+      }
+      break;
+    case resourceNotFoundError:
+      throw {
+        error: e,
+        code: 404
+      }
+      break;
+    default:
+      throw {
+        error: e,
+        code: 500
+      }
   }
+}
+
+// Parses and MSGraph User object
+let parseUser = function(json) {
+  let user = {
+    msid: json.id,
+    name: json.displayName,
+    jobTitle: json.jobTitle,
+    email: json.mail.toLowerCase(),
+    image: apiURL + currentUserPath + photoPath
+  }
+  return user
 }
 
 module.exports = {
@@ -60,20 +82,29 @@ module.exports = {
       handleError(json.error)
     }
 
-    let user = {
-      msid: json.id,
-      name: json.displayName,
-      jobTitle: json.jobTitle,
-      email: json.mail.toLowerCase(),
-      image: apiURL + currentUserPath + photoPath
+    return parseUser(json)
+  },
+
+  findById: async function(msid, token) {
+    const queryURL = apiURL + usersPath + '/' + msid
+    const response = await fetch(queryURL, {
+      method: 'get',
+      headers: {
+        "Authorization": token,
+      },
+    });
+    const json = await response.json();
+    if (json.error) {
+      handleError(json.error)
     }
-    return user
+
+    return parseUser(json)
   },
 
   // Find relevant people to a token holder
   // params: token (string) - MS Graph Access token
   relevantPeople: async function(token) {
-    const queryURL = apiURL + peoplePath + _.join(parameters, paramSeparator);
+    const queryURL = apiURL + peoplePath + _.join(relevantUsersParameters, paramSeparator);
     const response = await fetch(queryURL, {
       method: 'get',
       headers: {
