@@ -69,6 +69,7 @@ module.exports = {
         }
       });
     }
+
     // Proceed with feedback creation
     let feedback = {
       from: this.req.user.id,
@@ -84,7 +85,7 @@ module.exports = {
       return this.res.status(400).send({
         error: {
           code: 400,
-          message: "Destination user cannot be yourself"
+          message: "You cannot give feedback to yourself"
         }
       });
     }
