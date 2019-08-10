@@ -45,6 +45,12 @@ module.exports = {
     delete inputs.skip
     delete inputs.limit
 
+    // If the user is requesting private feedback, override the 'to'
+    if (inputs.isPublic == false) {
+      inputs.to = this.req.user.id
+    }
+    console.log(inputs.to)
+
     return {
       feedbacks: await Feedback.find({
           where: inputs
