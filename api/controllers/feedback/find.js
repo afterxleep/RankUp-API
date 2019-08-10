@@ -8,21 +8,17 @@ module.exports = {
   inputs: {
     from: {
       description: 'Initial Date',
-      type: 'number'
+      type: 'string'
     },
     to: {
       description: 'Final Date',
-      type: 'number'
-    },
-    page: {
-      description: 'Page to display',
-      type: 'number'
+      type: 'string'
     },
     value: {
       description: 'Company value to filter data',
       type: 'string'
     },
-    isPrivate: {
+    isPublic: {
       description: 'Include Only Private feedbacks',
       type: 'boolean'
     },
@@ -44,13 +40,10 @@ module.exports = {
   exits: {},
   fn: async function(inputs) {
 
-    if (!inputs.skip) {
-      inputs.skip = 0
-    }
-
-    if (!inputs.limit) {
-      inputs.limit = recordsPerpage
-    }
+    let skip = (!inputs.skip) ? 0 : inputs.skip
+    let limit = (!inputs.limit) ? recordsPerpage : inputs.limit
+    delete inputs.skip
+    delete inputs.limit
 
     return {
       feedbacks: await Feedback.find({
@@ -58,10 +51,15 @@ module.exports = {
         })
         .populate('from')
         .populate('to')
-        .populate('value'),
-      totalRecords: await Feedback.count(),
-      skipped: inputs.skip,
-      limit: inputs.limit
+        .populate('value')
+        .limit(limit)
+        .skip(skip)
+        .sort('sortIndex DESC'),
+      totalRecords: await Feedback.count({
+        where: inputs
+      }),
+      skipped: skip,
+      limit: limit
     }
   }
 };

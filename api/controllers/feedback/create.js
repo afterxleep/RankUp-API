@@ -76,7 +76,8 @@ module.exports = {
       value: inputs.value,
       comment: inputs.comment,
       isPublic: inputs.isPublic,
-      isPositive: inputs.isPositive
+      isPositive: inputs.isPositive,
+      sortIndex: Date.now() / 1000 | 0
     }
 
     if (feedback.from == feedback.to) {

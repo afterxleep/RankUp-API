@@ -42,6 +42,9 @@ module.exports = {
     },
     isPositive: {
       type: 'boolean'
+    },
+    sortIndex: {
+      type: 'number'
     }
   }
 };
