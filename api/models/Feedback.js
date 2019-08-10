@@ -28,17 +28,12 @@ module.exports = {
       type: 'boolean'
     },
     likes: {
-      type: 'number',
-      defaultsTo: 0
-    },
-    isLikedByuser: {
-      type: 'boolean'
+      collection: 'likes',
+      via: 'feedback'
     },
     flags: {
-      type: 'number'
-    },
-    isFlaggedByUser: {
-      type: 'boolean'
+      collection: 'flags',
+      via: 'feedback'
     },
     isPositive: {
       type: 'boolean'

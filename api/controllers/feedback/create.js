@@ -1,4 +1,5 @@
 const recordsPerpage = 100
+const maxCommentLength = 140
 
 module.exports = {
 
@@ -75,7 +76,7 @@ module.exports = {
       from: this.req.user.id,
       to: destinationUser.id,
       value: inputs.value,
-      comment: inputs.comment,
+      comment: inputs.comment.substring(0, maxCommentLength),
       isPublic: inputs.isPublic,
       isPositive: inputs.isPositive,
       sortIndex: Date.now() / 1000 | 0

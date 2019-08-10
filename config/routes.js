@@ -14,7 +14,11 @@ module.exports.routes = {
   // Required as automatic routes do not seem to work for shorter than 3 letter controllers
   'get /me': 'MeController.find',
   'post /me': 'MeController.create',
-  'put /me': 'MeController.create'
+  'put /me': 'MeController.create',
+
+  // Like or flag
+  'put /feedback/:feedbackId/like': 'FeedbackController.like',
+  'put /feedback/:feedbackId/flag': 'FeedbackController.flag'
 
 
 };

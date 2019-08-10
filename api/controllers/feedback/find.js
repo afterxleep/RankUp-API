@@ -50,16 +50,44 @@ module.exports = {
       inputs.to = this.req.user.id
     }
 
-    return {
-      feedbacks: await Feedback.find({
-          where: inputs
+    let feedbacks = await Feedback.find({
+        where: inputs
+      })
+      .populate('from')
+      .populate('to')
+      .populate('value')
+      .populate('likes')
+      .populate('flags')
+      .limit(limit)
+      .skip(skip)
+      .sort('sortIndex DESC')
+
+
+    let currentUserId = this.req.user.id
+
+    // Likes count and whether if it's liked or flagged by the user
+    feedbacks.map(function(feedback) {
+
+      if (feedback.likes.length > 0) {
+        let likesByUser = feedback.likes.filter(function(like) {
+          return like.from === currentUserId
         })
-        .populate('from')
-        .populate('to')
-        .populate('value')
-        .limit(limit)
-        .skip(skip)
-        .sort('sortIndex DESC'),
+        feedback.isLikedByuser = (likesByUser.length > 0) ? true : false
+      }
+
+      if (feedback.flags.length > 0) {
+        let flagsByUser = feedback.flags.filter(function(flag) {
+          return flag.from === currentUserId
+        })
+        feedback.isFlaggedByuser = (flagsByUser.length > 0) ? true : false
+      }
+
+      feedback.likes = feedback.likes.length
+      feedback.flags = feedback.flags.length
+    })
+
+    return {
+      feedbacks: feedbacks,
       totalRecords: await Feedback.count({
         where: inputs
       }),
