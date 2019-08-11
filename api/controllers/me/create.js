@@ -30,6 +30,9 @@ module.exports = {
     // By default set the user data to the Session info
     var u = this.req.user
 
+    // If the user is NOT registered, run the bonus transaction
+    await Transaction.signup(u)
+
     // If we've found a user, use it's info
     if (user) {
       u = user
@@ -56,6 +59,7 @@ module.exports = {
       })
       .populate(locationModel)
       .populate(areaModel)
+
     return this.res.status(statusCode).send(r);
   }
 }

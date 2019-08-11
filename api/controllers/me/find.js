@@ -43,12 +43,10 @@ module.exports = {
     let lastFeedbackReceived = await Feedback.find({
       'to': user.id
     }).sort('createdAt DESC').limit(1)
-    //console.log(lastFeedbackReceived)
 
     let lastFeedbackGiven = await Feedback.find({
       'from': user.id
     }).sort('createdAt DESC').limit(1)
-    //console.log(lastFeedbackGiven)
 
     user.lastFeedbackReceived = (lastFeedbackReceived.length) ? lastFeedbackReceived[0].createdAt : 0
     user.lastFeedbackGiven = (lastFeedbackGiven.length) ? lastFeedbackGiven[0].createdAt : 0
