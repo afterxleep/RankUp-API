@@ -50,5 +50,10 @@ module.exports = {
       type: 'boolean',
       defaultsTo: false
     }
+  },
+
+  afterCreate: function(user, proceed) {
+    Transaction.signup(user)
+    return proceed();
   }
 };

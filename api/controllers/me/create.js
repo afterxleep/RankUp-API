@@ -30,9 +30,6 @@ module.exports = {
     // By default set the user data to the Session info
     var u = this.req.user
 
-    // If the user is NOT registered, run the bonus transaction
-    await Transaction.signup(u)
-
     // If we've found a user, use it's info
     if (user) {
       u = user
@@ -45,11 +42,11 @@ module.exports = {
     var statusCode = 200
     if (user) {
       let result = await User.update({
-        // Update the data from graph
         msid: user.msid,
       }, u)
+      // Or create a new one
     } else {
-      let result = await User.create(u)
+      let result = await User.create(u).fetch() // fetch() is required so User afterCreate is triggered
       statusCode = 201
     }
 

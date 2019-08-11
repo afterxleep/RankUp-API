@@ -11,47 +11,52 @@ module.exports = {
     user: {
       model: 'user'
     },
-    comment: {
+    comments: {
       type: 'string'
+    },
+    type: {
+      type: 'string'
+      // feedback | discount | bonus
     },
     points: {
       type: 'number'
     },
     value: {
-      type: 'string'
+      type: 'string',
+      allowNull: true
     }
   },
 
   // Award points to the new user
   signup: async function(user) {
-      console.log(user)
-      let t = await this.create({
-        user: user.id,
-        comments: "Welcome to RankMe - Thanks for signing up!",
-        points: sails.config.scoring.signupBonus,
-        value: null
-      })
-    },
+    let t = await this.create({
+      user: user.id,
+      comments: "Welcome to RankMe!",
+      points: sails.config.scoring.signupBonus,
+      type: 'bonus',
+      value: null
+    })
+  },
 
-    // Award points to the originating and receiving users
-    feedback: function(feedback) {
+  // Award points to the originating and receiving users
+  feedback: function(feedback) {
 
-    },
+  },
 
-    // Awards points to the receiving user
-    like: function(feedback) {
+  // Awards points to the receiving user
+  like: function(feedback) {
 
-    },
+  },
 
-    // Discounts points when feedback is flagged several times
-    flag: function(feedback) {
+  // Discounts points when feedback is flagged several times
+  flag: function(feedback) {
 
-    },
+  },
 
-    // Apply usage discounts to everyone
-    useDiscounts: function() {
+  // Apply usage discounts to everyone
+  useDiscounts: function() {
 
-    }
+  }
 
 
 
