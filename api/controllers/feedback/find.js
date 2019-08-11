@@ -67,21 +67,18 @@ module.exports = {
 
     // Likes count and whether if it's liked or flagged by the user
     feedbacks.map(function(feedback) {
-
       if (feedback.likes.length > 0) {
         let likesByUser = feedback.likes.filter(function(like) {
           return like.from === currentUserId
         })
         feedback.isLikedByuser = (likesByUser.length > 0) ? true : false
       }
-
       if (feedback.flags.length > 0) {
         let flagsByUser = feedback.flags.filter(function(flag) {
           return flag.from === currentUserId
         })
         feedback.isFlaggedByuser = (flagsByUser.length > 0) ? true : false
       }
-
       feedback.likes = feedback.likes.length
       feedback.flags = feedback.flags.length
     })

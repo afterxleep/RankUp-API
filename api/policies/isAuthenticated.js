@@ -17,9 +17,12 @@ module.exports = async function(req, res, proceed) {
       'msid': req.user.msid
     })
     if (localUser) {
+      // Always update the user from graph after fetching
+      await User.update({
+        msid: req.user.msid
+      }).set(req.user).fetch()
       req.user = localUser
     }
-
     return proceed()
   } catch (e) {
     return res.status(e.code).send(e.error);

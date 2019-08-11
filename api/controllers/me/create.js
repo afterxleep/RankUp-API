@@ -24,8 +24,7 @@ module.exports = {
     if (!area) return this.res.status(400).send(areaError);
 
     var user = await User.findOne({
-      msid: this.req.user.msid,
-      is_registered: true
+      msid: this.req.user.msid
     })
 
     // By default set the user data to the Session info
@@ -43,7 +42,8 @@ module.exports = {
     var statusCode = 200
     if (user) {
       let result = await User.update({
-        msid: user.msid
+        // Update the data from graph
+        msid: user.msid,
       }, u)
     } else {
       let result = await User.create(u)
