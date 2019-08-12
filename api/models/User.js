@@ -52,6 +52,7 @@ module.exports = {
     }
   },
 
+  // Transaction signup
   afterCreate: function(user, proceed) {
     Transaction.signup(user)
     return proceed();
