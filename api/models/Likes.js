@@ -18,4 +18,10 @@ module.exports = {
 
   },
 
+  // Transaction points
+  afterCreate: function(feedback, proceed) {
+    Transaction.like(feedback)
+    return proceed();
+  }
+
 };

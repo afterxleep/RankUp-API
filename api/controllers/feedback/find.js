@@ -50,6 +50,9 @@ module.exports = {
       inputs.to = this.req.user.id
     }
 
+    // Remove deleted feedbacks
+    inputs.isDeleted = null
+
     let feedbacks = await Feedback.find({
         where: inputs
       })

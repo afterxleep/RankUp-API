@@ -77,7 +77,8 @@ module.exports = {
       to: destinationUser.id,
       value: inputs.value,
       comment: inputs.comment.substring(0, maxCommentLength),
-      isPublic: inputs.isPublic,
+      // Improvement feedbacks can never be public
+      isPublic: (!inputs.isPositive) ? false : inputs.isPublic,
       isPositive: inputs.isPositive,
       sortIndex: Date.now() / 1000 | 0
     }

@@ -18,4 +18,10 @@ module.exports = {
 
   },
 
+  // Transaction points
+  afterCreate: function(flag, proceed) {
+    Transaction.flag(flag)
+    return proceed();
+  }
+
 };

@@ -41,5 +41,11 @@ module.exports = {
     sortIndex: {
       type: 'number'
     }
+  },
+
+  // Transaction points
+  afterCreate: function(like, proceed) {
+    Transaction.feedback(like)
+    return proceed();
   }
 };

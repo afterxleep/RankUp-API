@@ -13,7 +13,7 @@ module.exports = {
       return await Likes.create({
         'from': this.req.user.id,
         'feedback': this.req.params.feedbackId
-      })
+      }).fetch() // Fetch required to trigger afterCreate
     }
   }
 };

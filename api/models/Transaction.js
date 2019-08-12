@@ -5,6 +5,19 @@
  * @docs        :: https://sailsjs.com/docs/concepts/models-and-orm/models
  */
 
+const welcomeToAppStr = "Welcome to RankMe!"
+const feedbackGivenToStr = "Feedback given to "
+const feedbackReceivedFromStr = "Feedback received from "
+const likedFeedbackString = "You've got a push from "
+const positiveTone = "(Positive) "
+const negativeTone = "(Improvement) "
+const flaggedGivenFeedbackRemoved = "A feedback you gave was removed because it was innapropiate or fake"
+const flaggedReceivedFeedbackRemoved = "A feedback you received was removed because it was innapropiate or fake"
+
+const bonusStr = "bonus"
+const pointsStr = "points"
+const discointStr = "points"
+
 module.exports = {
 
   attributes: {
@@ -22,34 +35,93 @@ module.exports = {
       type: 'number'
     },
     value: {
-      type: 'string',
-      allowNull: true
+      model: 'value',
     }
   },
 
   // Award points to the new user
   signup: async function(user) {
-    let t = await this.create({
+    await this.create({
       user: user.id,
-      comments: "Welcome to RankMe!",
-      points: sails.config.scoring.signupBonus,
-      type: 'bonus',
+      comments: welcomeToAppSrt,
+      points: sails.config.rankme.scoring.signupBonus,
+      type: bonusStr,
       value: null
     })
   },
 
   // Award points to the originating and receiving users
-  feedback: function(feedback) {
+  feedback: async function(feedback) {
+
+    // Get users
+    let destinationUser = await User.findOne(feedback.to)
+    let originatingUser = await User.findOne(feedback.from)
+
+    // Points to originating user
+    await this.create({
+      user: originatingUser.id,
+      comments: feedbackGivenToStr + destinationUser.name,
+      points: sails.config.rankme.scoring.feedbackGiven,
+      type: bonusStr,
+      value: null
+    })
+
+    // Points to destination user
+    let feedbackTone = (feedback.isPositive) ? positiveTone : negativeTone
+    await this.create({
+      user: destinationUser.id,
+      comments: feedbackTone + feedbackReceivedFromStr + originatingUser.name,
+      points: (feedback.isPositive) ? sails.config.rankme.scoring.positiveFeedbackReceived : sails.config.rankme.scoring.negativeFeedbackReceived,
+      type: pointsStr,
+      value: feedback.value
+    })
 
   },
 
   // Awards points to the receiving user
-  like: function(feedback) {
-
+  like: async function(like) {
+    let fb = await Feedback.findOne(like.feedback)
+    if (fb) {
+      let originatingUser = await User.findOne(like.from)
+      let destinationUser = await User.findOne(fb.to)
+      await this.create({
+        user: destinationUser.id,
+        comments: likedFeedbackString + originatingUser.name,
+        points: sails.config.rankme.scoring.likeReceived,
+        type: bonusStr,
+        value: fb.value
+      })
+    }
   },
 
   // Discounts points when feedback is flagged several times
-  flag: function(feedback) {
+  flag: async function(flag) {
+    let fb = await Feedback.findOne(flag.feedback).populate("flags")
+
+    // Discount only if we've reached the threshhold
+    if (fb.flags.length == sails.config.rankme.general.flagThreshold) {
+
+      let originatingUser = await User.findOne(flag.from)
+      let destinationUser = await User.findOne(fb.to)
+
+      // Remove the originating user's points
+      await this.create({
+        user: originatingUser.id,
+        comments: flaggedGivenFeedbackRemoved,
+        points: sails.config.rankme.scoring.feedbackGiven * -1,
+        type: bonusStr,
+        value: null
+      })
+
+      // Points to destination user
+      await this.create({
+        user: destinationUser.id,
+        comments: flaggedReceivedFeedbackRemoved,
+        points: (fb.isPositive) ? sails.config.rankme.scoring.positiveFeedbackReceived * -1 : sails.config.rankme.scoring.negativeFeedbackReceived * -1,
+        type: pointsStr,
+        value: fb.value
+      })
+    }
 
   },
 
