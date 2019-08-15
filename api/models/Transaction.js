@@ -44,7 +44,7 @@ module.exports = {
     await this.create({
       user: user.id,
       comments: welcomeToAppSrt,
-      points: sails.config.rankme.scoring.signupBonus,
+      points: sails.config.app.scoring.signupBonus,
       type: bonusStr,
       value: null
     })
@@ -61,7 +61,7 @@ module.exports = {
     await this.create({
       user: originatingUser.id,
       comments: feedbackGivenToStr + destinationUser.name,
-      points: sails.config.rankme.scoring.feedbackGiven,
+      points: sails.config.app.scoring.feedbackGiven,
       type: bonusStr,
       value: null
     })
@@ -71,7 +71,7 @@ module.exports = {
     await this.create({
       user: destinationUser.id,
       comments: feedbackTone + feedbackReceivedFromStr + originatingUser.name,
-      points: (feedback.isPositive) ? sails.config.rankme.scoring.positiveFeedbackReceived : sails.config.rankme.scoring.negativeFeedbackReceived,
+      points: (feedback.isPositive) ? sails.config.app.scoring.positiveFeedbackReceived : sails.config.app.scoring.negativeFeedbackReceived,
       type: pointsStr,
       value: feedback.value
     })
@@ -87,7 +87,7 @@ module.exports = {
       await this.create({
         user: destinationUser.id,
         comments: likedFeedbackString + originatingUser.name,
-        points: sails.config.rankme.scoring.likeReceived,
+        points: sails.config.app.scoring.likeReceived,
         type: bonusStr,
         value: fb.value
       })
@@ -99,7 +99,7 @@ module.exports = {
     let fb = await Feedback.findOne(flag.feedback).populate("flags")
 
     // Discount only if we've reached the threshhold
-    if (fb.flags.length == sails.config.rankme.general.flagThreshold) {
+    if (fb.flags.length == sails.config.app.general.flagThreshold) {
 
       let originatingUser = await User.findOne(flag.from)
       let destinationUser = await User.findOne(fb.to)
@@ -108,7 +108,7 @@ module.exports = {
       await this.create({
         user: originatingUser.id,
         comments: flaggedGivenFeedbackRemoved,
-        points: sails.config.rankme.scoring.feedbackGiven * -1,
+        points: sails.config.app.scoring.feedbackGiven * -1,
         type: bonusStr,
         value: null
       })
@@ -117,7 +117,7 @@ module.exports = {
       await this.create({
         user: destinationUser.id,
         comments: flaggedReceivedFeedbackRemoved,
-        points: (fb.isPositive) ? sails.config.rankme.scoring.positiveFeedbackReceived * -1 : sails.config.rankme.scoring.negativeFeedbackReceived * -1,
+        points: (fb.isPositive) ? sails.config.app.scoring.positiveFeedbackReceived * -1 : sails.config.app.scoring.negativeFeedbackReceived * -1,
         type: pointsStr,
         value: fb.value
       })
@@ -129,8 +129,5 @@ module.exports = {
   useDiscounts: function() {
 
   }
-
-
-
 
 };

@@ -16,7 +16,7 @@ module.exports = {
 
 
       // If the feedback has reached the required number of flags, softly Delete it
-      if (feedback.flags.length >= sails.config.rankme.general.flagThreshold) {
+      if (feedback.flags.length >= sails.config.app.general.flagThreshold) {
         await Feedback.update({
           id: feedback.id
         }).set({
