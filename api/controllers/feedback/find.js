@@ -68,9 +68,8 @@ module.exports = {
 
     let currentUserId = this.req.user.id
 
-    // Likes count and whether if it's liked or flagged by the user
+    // Update the feedback array for likes & flags
     feedbacks.map(function(feedback) {
-
       //Defaults to false
       feedback.isLikedByuser = false
       feedback.isFlaggedByuser = false

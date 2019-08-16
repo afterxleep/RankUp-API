@@ -60,7 +60,7 @@ let parseUser = function(json) {
     name: json.displayName,
     jobTitle: json.jobTitle,
     email: json.mail.toLowerCase(),
-    image: apiURL + currentUserPath + photoPath
+    image: apiURL + usersPath + pathSeparator + json.id + photoPath
   }
   return user
 }
