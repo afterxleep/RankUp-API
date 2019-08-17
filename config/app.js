@@ -2,7 +2,8 @@ module.exports.app = {
 
   general: {
     flagThreshold: 5, // Number of times a feedback is flagged to be hidden
-    likeBoost: 3600 // 1h boost on likes
+    likeBoost: 3600, // 1h boost on likes
+    domain: "endava.com"
   },
 
 

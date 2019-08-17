@@ -20,8 +20,17 @@ const relevantUsersParameters = [
   "$top=50", // Get top 50 users
   "$filter=personType/class eq 'Person' and personType/subclass eq 'OrganizationUser'" // Filter to active users from current organization
 ]
+const findUsersParameters = {
+  base: [
+    "$select=id,displayName,mail",
+    "$top=50"
+  ],
+  filter: "$filter=(startswith(displayName,'query') or startswith(surname,'query') or startswith(mail,'query') or startswith(userPrincipalName,'query'))",
+  searchTermPlaceholder: "query"
+}
 const pathSeparator = "/"
 const paramSeparator = "&"
+const urlParamSeparator = "?"
 const msGraphErrorPrefix = "MSGraph Error: "
 const invalidTokenError = "InvalidAuthenticationToken"
 const resourceNotFoundError = "Request_ResourceNotFound"
@@ -99,6 +108,33 @@ module.exports = {
     }
 
     return parseUser(json)
+  },
+
+  // Find People using a search term
+  find: async function(searchString, token) {
+
+    let regex = "/" + findUsersParameters.searchTermPlaceholder + "/g"
+    let filter = findUsersParameters.filter.replace(eval(regex), searchString)
+    let searchParams = _.join(findUsersParameters.base, paramSeparator) + paramSeparator + filter
+    const queryURL = apiURL + usersPath + urlParamSeparator + searchParams;
+    const response = await fetch(queryURL, {
+      method: 'get',
+      headers: {
+        "Authorization": token,
+      },
+    });
+    const json = await response.json();
+
+    if (json.error) {
+      handleError(json.error)
+    }
+
+    // Add images
+    json.value.map(function(person) {
+      person.image = apiURL + usersPath + pathSeparator + person.id + photoPath
+    })
+
+    return json.value
   },
 
   // Find relevant people to a token holder

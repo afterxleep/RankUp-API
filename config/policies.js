@@ -41,6 +41,10 @@ module.exports.policies = {
 
   ValueController: {
     'find': ['isAuthenticated']
+  },
+
+  UserController: {
+    'find': ['isAuthenticated']
   }
 
 
