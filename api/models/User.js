@@ -49,6 +49,10 @@ module.exports = {
     is_registered: {
       type: 'boolean',
       defaultsTo: false
+    },
+    transactions: {
+      collection: 'transaction',
+      via: 'user'
     }
   },
 

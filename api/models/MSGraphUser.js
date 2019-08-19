@@ -139,7 +139,9 @@ module.exports = {
                 name: person.displayName,
                 jobTitle: (person.jobTitle) ? person.jobTitle : null,
                 email: person.mail.toLowerCase(),
-                image: apiURL + usersPath + pathSeparator + person.id + photoPath
+                image: apiURL + usersPath + pathSeparator + person.id + photoPath,
+                location: null,
+                area: null
               }
             })
           return users

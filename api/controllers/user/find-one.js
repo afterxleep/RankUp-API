@@ -24,7 +24,7 @@ module.exports = {
       .populate('area')
 
     if (userData) {
-      //return userData
+      return userData
     }
 
     // No user was found, try MSGraph or fail completely

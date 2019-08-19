@@ -44,8 +44,12 @@ module.exports.policies = {
   },
 
   UserController: {
-    'graph-search': ['isAuthenticated'],
+    'find': ['isAuthenticated'],
     'find-one': ['isAuthenticated']
+  },
+
+  CronController: {
+    'calculate-rankings': true
   }
 
 

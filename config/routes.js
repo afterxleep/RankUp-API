@@ -21,7 +21,6 @@ module.exports.routes = {
   'put /feedback/:feedbackId/flag': 'FeedbackController.flag',
 
   // Get single user
-  'get /user/': 'UserController.graph-search',
   'get /user/:id': 'UserController.find-one'
 
 };

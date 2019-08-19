@@ -15,6 +15,9 @@ module.exports = {
     image: {
       type: 'string'
     },
+    description: {
+      type: 'string'
+    }
   },
 
 };
