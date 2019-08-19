@@ -27,11 +27,9 @@ module.exports.bootstrap = async function() {
   // ]);
   // ```
 
-  // Ensure 2d Index in the Location Collection
-  sails.models.location.native(function(err, collection) {
-    collection.ensureIndex({
-      'geolocation': '2dsphere'
-    });
+  // Ensure 2d Index in the Location Collection  
+  var db = sails.getDatastore().manager;
+  db.collection('location').ensureIndex({
+    'geolocation': '2dsphere'
   });
-
 };
