@@ -18,7 +18,10 @@ module.exports.routes = {
 
   // Like or flag
   'put /feedback/:feedbackId/like': 'FeedbackController.like',
-  'put /feedback/:feedbackId/flag': 'FeedbackController.flag'
+  'put /feedback/:feedbackId/flag': 'FeedbackController.flag',
 
+  // Get single user
+  'get /user/': 'UserController.graph-search',
+  'get /user/:id': 'UserController.find-one'
 
 };

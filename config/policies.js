@@ -44,7 +44,8 @@ module.exports.policies = {
   },
 
   UserController: {
-    'find': ['isAuthenticated']
+    'graph-search': ['isAuthenticated'],
+    'find-one': ['isAuthenticated']
   }
 
 
