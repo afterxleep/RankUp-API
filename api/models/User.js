@@ -29,7 +29,7 @@ module.exports = {
       type: 'string',
       defaultsTo: ''
     },
-    rank: {
+    score: {
       type: 'number'
     },
     location: {
@@ -56,5 +56,18 @@ module.exports = {
   afterCreate: function(user, proceed) {
     Transaction.signup(user)
     return proceed();
+  },
+
+  // Update a user's score
+  updateScore: async function(user, proceed) {
+    let transactions = await Transaction.find({
+      user: user
+    })
+    let points = transactions.reduce(function(totalPoints, transaction) {
+      return totalPoints + transaction.points;
+    }, 0)
+    await User.update(user).set({
+      score: points
+    })
   }
 };
