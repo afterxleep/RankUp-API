@@ -34,52 +34,66 @@ Api services for RankMe Apps
 ## FeedbackItem (object)
 + createdAt (number) - Creation date in ms
 + updatedAt (number) - Last date in ms
++ sortIndex (number) - Ordering Criteria in lists (Deschending by default)
 + id (string) - Feedback Database ID
 + from (SimplifiedUser) - Originating User Object
 + to (SimplifiedUser) - Destination User Object
 + value (CompanyValue) - Company Value Item
 + comment (string) - Feedback Comment
-+ is_public (boolean)
-+ is_pinned (boolean)
-+ pushes (number)
-+ pushes_by_user (boolean) - Wether logged in user already liked this item
++ isPublic (boolean)
++ isPinned (boolean)
++ likes (number)
++ isLikedByUser (boolean) - Wether logged in user already liked this item
++ flags (number)
++ isFlaggedByUser (boolean) - Wether logged in user already flagged this item
++ isPositive (boolean) - Wether the feedback is positive or negative
 
 ## SimplifiedUser (object)
-+ id (string) - Database Id of the user
++ id (string) - Database Id of the user (Might not be present if user is not created yet)
 + msid (string) - Microsoft ID of the user
 + name (string)
 + jobTitle (string)
 + email (string)
 + image (string)
++ rank (number)
++ score (number)
 
 ## UserPayload (object)
 + location (string) - Database ID of the related location object
 + area (string) - Database ID of the related area object
 
 ## FullUser (object)
-+ is_registered (boolean) - Wether the user is fully registered in the local DB
++ isRegistered (boolean) - Wether the user is fully registered in the local DB
 + id (string) - Database ID
 + msid (string) - Microsoft Graph ID
 + name (string)
 + email (string)
 + jobTitle (string)
 + image (string)
-+ location (object) - Company Location Object
-+ area (object) - Company Area Object
++ location (OfficeLocation) - Company Location Object
++ area (CompanyArea) - Company Area Object
 + role (string) - Role of the user in the system
 + rank (number) - Rank in Endava, (Lower is better)
 + score (number) - Current Score in points (Higher is better)
-+ valueScores (object)
-+ scores.*** (number) - Score for each of the values
-+ feedbacks_received (number) - Total Feedbacks received
-+ feedbacks_given (number) - Total Feedbacks given
-+ last_feedback_received (number) - Last FB Received Date in ms
-+ last_feedback_given (number) - Last FB Given Date in ms
++ points (number) - Value feedback points received 
++ valuePoints (ValueSampleScores) - Dynamic dDoictionary with values and points per value (Example below)
++ feedbacksReceived (number) - Total Feedbacks received
++ feedbacksGiven (number) - Total Feedbacks given
++ lastFeedbackReceived (number) - Last FB Received Date in ms
++ lastFeedbackGiven (number) - Last FB Given Date in ms
+
+## ValueSampleScores (object)
++ thougthful (number)
++ open (number)
++ adaptable (number)
++ smart (number)
++ trusted (number)
 
 
-## Group Company Area
 
-### Company Area Collection [/area]
+
+### Company Areas [/area]
+Users in the company belong to a single Area (i.e. Development or Finance)
 
 #### List All Company Areas [GET]
 
@@ -143,8 +157,8 @@ Api services for RankMe Apps
             ]
 
 
-#### Create new company area [POST]
-Note: Company area creation is limited to admin users
+#### Create Company area [POST]
+
 
 + Request (application/json; charset=utf-8)
 
@@ -174,13 +188,13 @@ Note: Company area creation is limited to admin users
             }
 
 
-### Company Area Record [/area/{area_id}]
+
+#### Delete (archive) Company Area [DELETE /area/{area_id}]
+Note: **CREATE** and **DELETE** are restricted to admin users
+
 
 + Parameters
     + area_id - ID of a company area
-
-#### Delete (archive) company area [DELETE]
-Note: Company area deletion is limited to admin users
 
 + Request (application/json; charset=utf-8)
 
@@ -193,11 +207,11 @@ Note: Company area deletion is limited to admin users
 + Response 200 (text/html; charset=utf-8)
 
 
-## Group Office Location
 
-### Location Collection [/location]
+### Office Locations [/location]
+Users in the company belong to an office (geolocation) (i.e. Bogotá or Belgrade)
 
-#### List All Company Locations [GET]
+#### List Company Locations [GET]
 
 + Request
 
@@ -255,8 +269,7 @@ Note: Company area deletion is limited to admin users
             ]
 
 
-#### Create new location [POST]
-Note: Location creation is limited to admin users
+#### Create Company Location [POST]
 
 + Request (application/json; charset=utf-8)
 
@@ -292,13 +305,11 @@ Note: Location creation is limited to admin users
             }
 
 
-### Location Record [/location/{location_id}]
+#### Delete (archive) Company Location [DELETE /location/{location_id}]
+Note: **CREATE** and **DELETE** are restricted to admin users
 
 + Parameters
     + location_id - ID of a location
-
-#### Delete (archive) Location [DELETE]
-Note: Location deletion is limited to admin users
 
 + Request (application/json; charset=utf-8)
 
@@ -309,11 +320,10 @@ Note: Location deletion is limited to admin users
 + Response 200 (text/html; charset=utf-8)
 
 
-## Group Company Values
+### Company Values [/value]
+Users can provide feedback based on one company value (ie. Smart, Thoughtful)
 
-### Company Value Collection [/value]
-
-#### List All Company Values [GET]
+#### List Company Values [GET]
 
 + Request
 
@@ -367,8 +377,7 @@ Note: Location deletion is limited to admin users
             ]
 
 
-#### Create new company value [POST]
-Note: Value area creation is limited to admin users
+#### Create Company Calue [POST]
 
 + Request (application/json; charset=utf-8)
 
@@ -401,13 +410,11 @@ Note: Value area creation is limited to admin users
             }
 
 
-### Company Value Record [/value/{value_id}]
+#### Delete (archive) Company Value [DELETE /value/{value_id}]
+Note: **CREATE** and **DELETE** are restricted to admin users
 
 + Parameters
     + value_id - ID of a company value
-
-#### Delete (archive) Company Value [DELETE]
-Note: Company Value deletion is limited to admin users
 
 + Request (application/json; charset=utf-8)
 
@@ -420,12 +427,11 @@ Note: Company Value deletion is limited to admin users
 
 + Response 200 (text/html; charset=utf-8)
 
-## Group Logged In User
 
-### User Profile [/me]
+### Logged In User [/me]
 Actions for currently logged in user are based on the provided MSGRAPH token information
 
-#### Get currently logged in user [GET]
+#### Obtain Logged in User Information [GET]
 
 + Request
 
@@ -443,7 +449,7 @@ Actions for currently logged in user are based on the provided MSGRAPH token inf
     + Body
 
             {
-              "is_registered": true,
+              "isRegistered": true,
               "createdAt": 1563946507335,
               "updatedAt": 1563946507335,
               "id": "5d37ee0b68f99c7a7d5779f6",
@@ -453,8 +459,11 @@ Actions for currently logged in user are based on the provided MSGRAPH token inf
               "jobTitle": "Head of Development",
               "image": "https://graph.microsoft.com/v1.0/me/photo/$value",
               "rank": 0,
-              "scores": {
-                "average": 0,
+              "score": 0,
+              "points": 0,
+              "bonuses": 0,
+              "deductions": 0,              
+              "valuePoints": {
                 "thoughtful": 0,
                 "open": 0,
                 "adaptable": 0,
@@ -506,7 +515,8 @@ Actions for currently logged in user are based on the provided MSGRAPH token inf
               }
             }
 
-#### Create a new local user from MSGRAPH Token [POST]
+#### Register Logged In User to Local DB [POST]
+Uses MSGraph Data, along with provided location and area, to register a user in the local database
 
 + Request (application/json; charset=utf-8)
 
@@ -528,7 +538,7 @@ Actions for currently logged in user are based on the provided MSGRAPH token inf
     + Body
 
             {
-              "is_registered": true,
+              "isRegistered": true,
               "createdAt": 1563946507335,
               "updatedAt": 1563946507335,
               "id": "5d37ee0b68f99c7a7d5779f6",
@@ -538,8 +548,11 @@ Actions for currently logged in user are based on the provided MSGRAPH token inf
               "jobTitle": "Head of Development",
               "image": "https://graph.microsoft.com/v1.0/me/photo/$value",
               "rank": 0,
-              "scores": {
-                "average": 0,
+              "score": 0,
+              "points": 0,
+              "bonuses": 0,
+              "deductions": 0,              
+              "valuePoints": {
                 "thoughtful": 0,
                 "open": 0,
                 "adaptable": 0,
@@ -577,7 +590,8 @@ Actions for currently logged in user are based on the provided MSGRAPH token inf
 
 
 
-#### Update a existing local user from MSGRAPH Token [PUT]
+#### Update Logged In User [PUT]
+Uses MSGraph Data, along with provided location and area, to update a user in the local database
 
 + Request (application/json; charset=utf-8)
 
@@ -598,26 +612,450 @@ Actions for currently logged in user are based on the provided MSGRAPH token inf
 
     + Body
 
-             {
-              "is_registered": true,
+              {
+                "isRegistered": true,
+                "createdAt": 1563946507335,
+                "updatedAt": 1563946507335,
+                "id": "5d37ee0b68f99c7a7d5779f6",
+                "msid": "99a3971a-8d39-4e06-93c4-c674b2b3a272",
+                "name": "Daniel Bernal",
+                "email": "daniel.bernal@endava.com",
+                "jobTitle": "Head of Development",
+                "image": "https://graph.microsoft.com/v1.0/me/photo/$value",
+                "rank": 0,
+                "score": 0,
+                "points": 0,
+                "bonuses": 0,
+                "deductions": 0,              
+                "valuePoints": {
+                  "thoughtful": 0,
+                  "open": 0,
+                  "adaptable": 0,
+                  "smart": 0,
+                  "trusted": 0
+                },
+                "role": "user",
+                "location": {
+                  "createdAt": 1563754289652,
+                  "updatedAt": 1563754289652,
+                  "id": "5d34ff31fca3b9104a74c2af",
+                  "name": "Belgrade",
+                  "geolocation": {
+                    "type": "Point",
+                    "coordinates": [
+                      20.423133,
+                      44.807488
+                    ]
+                  }
+                },
+                "area": {
+                  "createdAt": 1563757467823,
+                  "updatedAt": 1563757467823,
+                  "id": "5d350b9b3d25dc15994fdf8f",
+                  "name": "Testing"
+                }
+              }
+
+
+#### Retrieve Logged In User Relevant Contacts (Circle of influence) [GET /people/relevant-contacts]
+This method provides a list of relevant users to the currenly logged in person.  This is useful when providing recommentations about whom to give feedback
+
++ Request
+
+    + Headers
+
+            Authorization: Bearer MSGRAPH_TOKEN
+
+    + Attributes (SimplifiedUser)
+
+
++ Response 200 (application/json; charset=utf-8)
+
+    + Body
+
+            [
+                {
+                    "id": "5d34ff31fca3b9104a74c2af",
+                    "msid": "3593590b-023e-4098-8faa-489ec9443f28",
+                    "name": "Corneliu Bohantov",
+                    "jobTitle": "Head of Architecture",
+                    "email": "corneliu.bohantov@endava.com",
+                    "score": 100,
+                    "rank": 2,
+                    "image": "https://graph.microsoft.com/v1.0/users/3593590b-023e-4098-8faa-489ec9443f28/photo/$value"
+                },
+                {
+                    "id": "5d34ff31fca3b9104a74c2af",
+                    "msid": "7bce17f9-916d-4588-a940-f519269d5fb5",
+                    "name": "Elena Plop",
+                    "jobTitle": "DU Manager",
+                    "email": "elena.plop@endava.com",
+                    "score": 100,
+                    "rank": 2,
+                    "image": "https://graph.microsoft.com/v1.0/users/7bce17f9-916d-4588-a940-f519269d5fb5/photo/$value"
+                },
+                {
+                    "id": "5d34ff31fca3b9104a74c2af",
+                    "msid": "7bce17f9-916d-4588-a940-f519269d5fb5",
+                    "name": "Kumail Jetha",
+                    "jobTitle": "Regional Manager",
+                    "email": "kumail.jetha@endava.com",
+                    "score": 100,
+                    "rank": 2,
+                    "image": "https://graph.microsoft.com/v1.0/users/8047e6cc-d858-47ee-a6ba-d8c11e02f4d7/photo/$value"
+                }
+              ]
+
+
+
+### Feedback [/feedback]
+Feedback list and actions
+
+#### List Feedback Messages [GET /feedback?from={from}&to={to}&page={page}&value={value}&user={user}&isPrivate={isPrivate}&isPinned={isPinned}&skip={skip}&limit={limit}]
+Returns a paginated feed for feedbacks sorted chronologically and filters by provided parameters. <br>
+- If no filters provided, will return the last 100 feedback items in the database.<br>
+- Service will return private feedbacks for the currently logged in user
+
++ Request
+
+    + Headers
+
+            Authorization: Bearer MSGRAPH_DATA
+
++ Parameters
+    + from (number, optional) - Start date in ms
+    + to (number, optional) - End date in ms
+    + value (string, optional) - Value filter (Value ID)
+    + user (string, optional) - User filter (User ID)
+    + isPrivate (boolean, optional) - Include private feedbacks (For current user only)
+    + isPinned (boolean, optional) - Display only pinned items (Lmited to 10 by default)
+    + skip (number, required) - Skip this amount of items from the query (For pagination)
+    + limit (number, optional) - Limit the query to a specific number of items (100 by default)
+
++ Attributes
+    + feedbacks (array)
+        +  (FeedbackItem)
+    + totalRecords (number) - Total Records found
+    + skipped (number) - Records skipped
+    + limit (number) - Query limited to X records
+
+
++ Response 200 (application/json; charset=utf-8)
+
+    + Body
+
+            {
+              "feedbacks": [{
+                  "createdAt": 1563946507335,
+                  "updatedAt": 1563946507335,
+                  "id": "5d34ff31fca3b9104a74c2af",
+                  "from": {
+                    "id": "5d34ff31fca3b9104a74c2af",
+                    "msid": "3593590b-023e-4098-8faa-489ec9443f28",
+                    "name": "Corneliu Bohantov",
+                    "jobTitle": "Head of Architecture",
+                    "email": "corneliu.bohantov@endava.com",
+                    "score": 100,
+                    "rank": 2,
+                    "image": "https://graph.microsoft.com/v1.0/users/3593590b-023e-4098-8faa-489ec9443f28/photo/$value"
+                  },
+                  "to": {
+                    "id": "5d34ff31fca3b9104a74c2af",
+                    "msid": "3593590b-023e-4098-8faa-489ec9443f28",
+                    "name": "Juan Perez",
+                    "jobTitle": "Head of Testing",
+                    "email": "juan.perez@endava.com",
+                    "score": 100,
+                    "rank": 2,
+                    "image": "https://graph.microsoft.com/v1.0/users/3593590b-023e-4098-8faa-489ec9443f28/photo/$value"
+                  },
+                  "value": {
+                    "createdAt": 1564195292534,
+                    "updatedAt": 1564195292534,
+                    "id": "5d3bb9dca0f903bd7abab435",
+                    "name": "Open",
+                    "image": "open.png"
+                  },
+                  "comment": "Lorem ipsum dolor sit amet consecteur",
+                  "isPublic": true,
+                  "isPinned": true,
+                  "likes": 25, 
+                  "isLikedByUser": true,
+                  "flags": 3,
+                  "isFlaggedByUser": true                },
+                {
+                  "createdAt": 1563946507335,
+                  "updatedAt": 1563946507335,
+                  "id": "5d34ff31fca3b9104a74c2af",
+                  "from": {
+                    "id": "5d34ff31fca3b9104a74c2af",
+                    "msid": "3593590b-023e-4098-8faa-489ec9443f28",
+                    "name": "Juan Perez",
+                    "jobTitle": "Head of Testing",
+                    "email": "juan.perez@endava.com",
+                    "score": 100,
+                    "rank": 2,
+                    "image": "https://graph.microsoft.com/v1.0/users/3593590b-023e-4098-8faa-489ec9443f28/photo/$value"
+                  },
+                  "to": {
+                    "id": "5d34ff31fca3b9104a74c2af",
+                    "msid": "3593590b-023e-4098-8faa-489ec9443f28",
+                    "name": "Corneliu Bohantov",
+                    "jobTitle": "Head of Architecture",
+                    "email": "corneliu.bohantov@endava.com",
+                    "score": 100,
+                    "rank": 2,
+                    "image": "https://graph.microsoft.com/v1.0/users/3593590b-023e-4098-8faa-489ec9443f28/photo/$value"
+                  },
+                  "value": {
+                    "createdAt": 1564195292534,
+                    "updatedAt": 1564195292534,
+                    "id": "5d3bb9dca0f903bd7abab435",
+                    "name": "Open",
+                    "image": "open.png"
+                  },
+                  "comment": "Lorem ipsum dolor sit amet consecteur",
+                  "is_public": true,
+                  "is_pinned": true,
+                  "likes": 25, 
+                  "isLikedByUser": true,
+                  "flags": 3,
+                  "isFlaggedByUser": true  
+                }
+              ],
+              "totalRecords": 2,
+              "skip": 10,
+              "limit": 1
+            }
+
+#### Create Feedback Message [POST]
+
++ Request
+
+    + Headers
+
+            Authorization: Bearer MSGRAPH_DATA
+
++ Attributes
+    + msid (string, required) - Microsoft ID of the user receiving the feedback
+    + value (string, required) - ID of the value for this comment
+    + comment (string, required)            
+    + isPublic (boolean, required)
+    + isPositive (boolean, required)            
+
+
++ Response 201 (application/json; charset=utf-8)
+
+    + Body
+        
+              {
+                  "createdAt": 1563946507335,
+                  "updatedAt": 1563946507335,
+                  "id": "5d34ff31fca3b9104a74c2af",
+                  "from": {
+                    "id": "5d34ff31fca3b9104a74c2af",
+                    "msid": "3593590b-023e-4098-8faa-489ec9443f28",
+                    "name": "Corneliu Bohantov",
+                    "jobTitle": "Head of Architecture",
+                    "email": "corneliu.bohantov@endava.com",
+                    "score": 100,
+                    "rank": 2,
+                    "image": "https://graph.microsoft.com/v1.0/users/3593590b-023e-4098-8faa-489ec9443f28/photo/$value"
+                  },
+                  "to": {
+                    "id": "5d34ff31fca3b9104a74c2af",
+                    "msid": "3593590b-023e-4098-8faa-489ec9443f28",
+                    "name": "Juan Perez",
+                    "jobTitle": "Head of Testing",
+                    "email": "juan.perez@endava.com",
+                    "score": 100,
+                    "rank": 2,
+                    "image": "https://graph.microsoft.com/v1.0/users/3593590b-023e-4098-8faa-489ec9443f28/photo/$value"
+                  },
+                  "value": {
+                    "createdAt": 1564195292534,
+                    "updatedAt": 1564195292534,
+                    "id": "5d3bb9dca0f903bd7abab435",
+                    "name": "Open",
+                    "image": "open.png"
+                  },
+                  "comment": "Lorem ipsum dolor sit amet consecteur",
+                  "isPublic": true,
+                  "isPinned": true,
+                  "likes": ', 
+                  "isLikedByUser": true,
+                  "flags": 0,
+                  "isFlaggedByUser": false                
+                }
+            
+
+#### Like Feedback Message [PUT /feedback/{feedback_id}/like]
+
++ Parameters
+    + feedback_id - ID of a feedback item
+
++ Request
+
+    + Headers
+
+            Authorization: Bearer MSGRAPH_TOKEN
+
+    + Body
+
+
++ Response 200 (text/html; charset=utf-8)
+
+          {
               "createdAt": 1563946507335,
               "updatedAt": 1563946507335,
-              "id": "5d37ee0b68f99c7a7d5779f6",
+              "id": "5d34ff31fca3b9104a74c2af",
+              "from": {
+                "id": "5d34ff31fca3b9104a74c2af",
+                "msid": "3593590b-023e-4098-8faa-489ec9443f28",
+                "name": "Corneliu Bohantov",
+                "jobTitle": "Head of Architecture",
+                "email": "corneliu.bohantov@endava.com",
+                "score": 100,
+                "rank": 2,
+                "image": "https://graph.microsoft.com/v1.0/users/3593590b-023e-4098-8faa-489ec9443f28/photo/$value"
+              },
+              "to": {
+                "id": "5d34ff31fca3b9104a74c2af",
+                "msid": "3593590b-023e-4098-8faa-489ec9443f28",
+                "name": "Juan Perez",
+                "jobTitle": "Head of Testing",
+                "email": "juan.perez@endava.com",
+                "score": 100,
+                "rank": 2,
+                "image": "https://graph.microsoft.com/v1.0/users/3593590b-023e-4098-8faa-489ec9443f28/photo/$value"
+              },
+              "value": {
+                "createdAt": 1564195292534,
+                "updatedAt": 1564195292534,
+                "id": "5d3bb9dca0f903bd7abab435",
+                "name": "Open",
+                "image": "open.png"
+              },
+              "comment": "Lorem ipsum dolor sit amet consecteur",
+              "isPublic": true,
+              "isPinned": true,
+              "likes": 25, 
+              "isLikedByUser": true,
+              "flags": 3,
+              "isFlaggedByUser": true                
+            }
+
+#### Flag Feedback Message [PUT /feedback/{feedback_id}/flag]
+
++ Parameters
+    + feedback_id - ID of a feedback item
+
++ Request
+
+    + Headers
+
+            Authorization: Bearer MSGRAPH_TOKEN
+
+    + Body
+
+
++ Response 200 (text/html; charset=utf-8)
+
+            {
+                "createdAt": 1563946507335,
+                "updatedAt": 1563946507335,
+                "id": "5d34ff31fca3b9104a74c2af",
+                "from": {
+                  "id": "5d34ff31fca3b9104a74c2af",
+                  "msid": "3593590b-023e-4098-8faa-489ec9443f28",
+                  "name": "Corneliu Bohantov",
+                  "jobTitle": "Head of Architecture",
+                  "email": "corneliu.bohantov@endava.com",
+                  "score": 100,
+                  "rank": 2,
+                  "image": "https://graph.microsoft.com/v1.0/users/3593590b-023e-4098-8faa-489ec9443f28/photo/$value"
+                },
+                "to": {
+                  "id": "5d34ff31fca3b9104a74c2af",
+                  "msid": "3593590b-023e-4098-8faa-489ec9443f28",
+                  "name": "Juan Perez",
+                  "jobTitle": "Head of Testing",
+                  "email": "juan.perez@endava.com",
+                  "score": 100,
+                  "rank": 2,
+                  "image": "https://graph.microsoft.com/v1.0/users/3593590b-023e-4098-8faa-489ec9443f28/photo/$value"
+                },
+                "value": {
+                  "createdAt": 1564195292534,
+                  "updatedAt": 1564195292534,
+                  "id": "5d3bb9dca0f903bd7abab435",
+                  "name": "Open",
+                  "image": "open.png"
+                },
+                "comment": "Lorem ipsum dolor sit amet consecteur",
+                "isPublic": true,
+                "isPinned": true,
+                "likes": 25, 
+                "isLikedByUser": true,
+                "flags": 3,
+                "isFlaggedByUser": true                
+              }
+
+
+
+#### Delete (archive) Feedback Message [DELETE /feedback/{feedback_id}]
+Note: **DELETE** is restricted to admin users
+
++ Parameters
+    + feedback_id - ID of a feedback item
+
++ Request (application/json; charset=utf-8)
+
+    + Headers
+
+            Authorization: Bearer MSGRAPH_TOKEN
+
+    + Body
+
+
++ Response 200 (text/html; charset=utf-8)
+
+              
+
+
+### Users [/user]
+
+#### Get User Data [GET /user/{userId}]
+
++ Parameters
+    + userId (string, optional) - MSID (Graph ID) of the user
+
++ Request
+
+    + Headers
+
+            Authorization: Bearer MSGRAPH_TOKEN
+            
+            
+    + Attributes (SimplifiedUser)
+    
++ Response 200 (application/json)
+
+    + Body
+
+            {
+              "createdAt": 1565922323585,
+              "updatedAt": 1566188088468,
+              "id": "5d5614132a9b18766bef31c0",
               "msid": "99a3971a-8d39-4e06-93c4-c674b2b3a272",
               "name": "Daniel Bernal",
               "email": "daniel.bernal@endava.com",
               "jobTitle": "Head of Development",
-              "image": "https://graph.microsoft.com/v1.0/me/photo/$value",
+              "image": "https://graph.microsoft.com/v1.0/users/99a3971a-8d39-4e06-93c4-c674b2b3a272/photo/$value",
               "rank": 0,
-              "scores": {
-                "average": 0,
-                "thoughtful": 0,
-                "open": 0,
-                "adaptable": 0,
-                "smart": 0,
-                "trusted": 0
-              },
+              "valuePoints": {},
               "role": "user",
+              "is_registered": true,
               "location": {
                 "createdAt": 1563754289652,
                 "updatedAt": 1563754289652,
@@ -638,84 +1076,49 @@ Actions for currently logged in user are based on the provided MSGRAPH token inf
                 "name": "Testing"
               }
             }
+            
 
+#### Find Users [GET /user?query={query}&limit={limit}&skip={skip}&sort={sort}&location={location}&area={area}]
+Returns a list of users filtered and sorted by different parameters
 
-### Relevant Contacts [/people/relevant-contacts]
-Obtain relevant contacts for the currently logged in user with priority ranking and diverse filtering options
++ Parameters
+    + query (string, optional) - Search Term.   If provided, it will search for users in MSGraph (Every other parameter is ignored when query is provided)
+    + limit (number, optional) - Limit number of results, default is 100
+    + skip (number, optional) - Skip a specified number of records, default is 0
+    + sort (string, optional) - Sort criteria to be used.  Results can be sorted using any field in the form of 'name DESC' or 'ranking ASC' etc.
+    + location (string, optional) -  Filter users with the provided location
+    + area (string, optional) - Filter users with the provided area
 
-#### Get Relevant Contacts [GET]
 
 + Request
 
     + Headers
 
             Authorization: Bearer MSGRAPH_TOKEN
-
+            
+            
     + Attributes (SimplifiedUser)
+    
+    
+        
 
-
-+ Response 200 (application/json; charset=utf-8)
++ Response 200 (application/json)
 
     + Body
 
             [
-                {
-                    "msid": "3593590b-023e-4098-8faa-489ec9443f28",
-                    "name": "Corneliu Bohantov",
-                    "jobTitle": "Head of Architecture",
-                    "email": "corneliu.bohantov@endava.com",
-                    "image": "https://graph.microsoft.com/v1.0/users/3593590b-023e-4098-8faa-489ec9443f28/photo/$value"
-                },
-                {
-                    "msid": "7bce17f9-916d-4588-a940-f519269d5fb5",
-                    "name": "Elena Plop",
-                    "jobTitle": "DU Manager",
-                    "email": "elena.plop@endava.com",
-                    "image": "https://graph.microsoft.com/v1.0/users/7bce17f9-916d-4588-a940-f519269d5fb5/photo/$value"
-                },
-                {
-                    "msid": "7bce17f9-916d-4588-a940-f519269d5fb5",
-                    "name": "Kumail Jetha",
-                    "jobTitle": "Regional Manager",
-                    "email": "kumail.jetha@endava.com",
-                    "image": "https://graph.microsoft.com/v1.0/users/8047e6cc-d858-47ee-a6ba-d8c11e02f4d7/photo/$value"
-                }
-              ]
-
-## Group Feedback
-(WORK IN PROGRESS -- NOT AVAILABLE FOR TESTING)
-
-### Feedback Collection [/feedback?from={from}&to={to}&page={page}&value={value}&user={user}&private={private}&pinned={pinned}]
-Feedback list and actions
-
-#### Get Feedbback feed [GET]
-Returns a paginated feed for feedbacks sorted chronologically and filters by provided parameters. <br>
-- If no filters provided, will return the last 100 feedback items in the database.<br>
-- Service will return private feedbacks for the currently logged in user
-
-+ Request
-
-    + Headers
-
-            Authorization: Bearer MSGRAPH_DATA
-
-+ Parameters
-    + from (number, optional) - Start date in ms
-    + to (number, optional) - End date in ms
-    + page (number, optional) - Page number
-    + value (string, optional) - Value filter (Value ID)
-    + user (string, optional) - User filter (User ID)
-    + private (boolean, optional) - Include private feedbacks (For current user only)
-    + pinned (boolean, optional) - Display only pinned items (Lmited to 10 by default)
-
-+ Attributes
-    + feedbacks (array)
-        +  (FeedbackItem)
-    + total_records (number)
-    + page (number)
-    + total_pages (number)
-
-
-+ Response 200 (application/json; charset=utf-8)
-
-    + Body
+                  {
+                    "msid": "99a3971a-8d39-4e06-93c4-c674b2b3a272",
+                    "name": "Daniel Bernal",
+                    "jobTitle": "Head of Development",
+                    "email": "daniel.bernal@endava.com",
+                    "image": "https://graph.microsoft.com/v1.0/users/99a3971a-8d39-4e06-93c4-c674b2b3a272/photo/$value"
+                  },
+                  {
+                    "msid": "7a139c95-f451-4355-8fa4-fab35aedf32f",
+                    "name": "Yeison Bernal",
+                    "jobTitle": null,
+                    "email": "yeison.bernal@endava.com",
+                    "image": "https://graph.microsoft.com/v1.0/users/7a139c95-f451-4355-8fa4-fab35aedf32f/photo/$value"
+                  }
+            ]
