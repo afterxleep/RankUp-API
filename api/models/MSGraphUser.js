@@ -34,7 +34,7 @@ const urlParamSeparator = "?"
 const msGraphErrorPrefix = "MSGraph Error: "
 const invalidTokenError = "InvalidAuthenticationToken"
 const resourceNotFoundError = "Request_ResourceNotFound"
-const scoreFilterHigherThan = 200
+const scoreFilterHigherThan = 0
 
 // Handles error for MSGraph calls
 // params: error (MSGraphError) - MS Graph Error Message
@@ -79,102 +79,102 @@ module.exports = {
   // Get Current User Details
   // params: token (string) - MS Graph Access token
   me: async function(token) {
-      const queryURL = apiURL + currentUserPath
-      const response = await fetch(queryURL, {
-        method: 'get',
-        headers: {
-          "Authorization": token,
-        },
-      });
-      const json = await response.json();
-      if (json.error) {
-        handleError(json.error)
-      }
-
-      return parseUser(json)
-    },
-
-    findById: async function(msid, token) {
-        const queryURL = apiURL + usersPath + '/' + msid
-        const response = await fetch(queryURL, {
-          method: 'get',
-          headers: {
-            "Authorization": token,
-          },
-        });
-        const json = await response.json();
-        if (json.error) {
-          handleError(json.error)
-        }
-
-        return parseUser(json)
+    const queryURL = apiURL + currentUserPath
+    const response = await fetch(queryURL, {
+      method: 'get',
+      headers: {
+        "Authorization": token,
       },
+    });
+    const json = await response.json();
+    if (json.error) {
+      handleError(json.error)
+    }
 
-      // Find People using a search term
-      find: async function(searchString, token) {
+    return parseUser(json)
+  },
 
-          let regex = "/" + findUsersParameters.searchTermPlaceholder + "/g"
-          let filter = findUsersParameters.filter.replace(eval(regex), searchString)
-          let searchParams = _.join(findUsersParameters.base, paramSeparator) + paramSeparator + filter
-          const queryURL = apiURL + usersPath + urlParamSeparator + searchParams;
+  findById: async function(msid, token) {
+    const queryURL = apiURL + usersPath + '/' + msid
+    const response = await fetch(queryURL, {
+      method: 'get',
+      headers: {
+        "Authorization": token,
+      },
+    });
+    const json = await response.json();
+    if (json.error) {
+      handleError(json.error)
+    }
 
-          const response = await fetch(queryURL, {
-            method: 'get',
-            headers: {
-              "Authorization": token,
-            },
-          });
-          const json = await response.json();
+    return parseUser(json)
+  },
 
-          if (json.error) {
-            handleError(json.error)
-          }
+  // Find People using a search term
+  find: async function(searchString, token) {
 
-          // Clean up the results, and returns only users with endava emails
-          return json.value
-            .filter(person => person.mail.endsWith(sails.config.app.general.domain))
-            .map(function(person) {
-              return {
-                msid: person.id,
-                name: person.displayName,
-                jobTitle: (person.jobTitle) ? person.jobTitle : null,
-                email: person.mail.toLowerCase(),
-                image: apiURL + usersPath + pathSeparator + person.id + photoPath,
-                location: null,
-                area: null
-              }
-            })
-          return users
-        },
+    let regex = "/" + findUsersParameters.searchTermPlaceholder + "/g"
+    let filter = findUsersParameters.filter.replace(eval(regex), searchString)
+    let searchParams = _.join(findUsersParameters.base, paramSeparator) + paramSeparator + filter
+    const queryURL = apiURL + usersPath + urlParamSeparator + searchParams;
 
-        // Find relevant people to a token holder
-        // params: token (string) - MS Graph Access token
-        relevantPeople: async function(token) {
-          const queryURL = apiURL + peoplePath + _.join(relevantUsersParameters, paramSeparator);
-          const response = await fetch(queryURL, {
-            method: 'get',
-            headers: {
-              "Authorization": token,
-            },
-          });
-          const json = await response.json();
+    const response = await fetch(queryURL, {
+      method: 'get',
+      headers: {
+        "Authorization": token,
+      },
+    });
+    const json = await response.json();
 
-          if (json.error) {
-            handleError(json.error)
-          }
+    if (json.error) {
+      handleError(json.error)
+    }
 
-          // Clean up the results, and returns only users with endava emails
-          return json.value
-            .filter(person => person.scoredEmailAddresses[0].relevanceScore > scoreFilterHigherThan)
-            .map(function(person) {
-              return {
-                msid: person.id,
-                name: person.displayName,
-                jobTitle: person.jobTitle,
-                email: person.scoredEmailAddresses[0].address.toLowerCase(),
-                //relevance: person.scoredEmailAddresses[0].relevanceScore,
-                image: apiURL + usersPath + pathSeparator + person.id + photoPath
-              }
-            })
+    // Clean up the results, and returns only users with endava emails
+    return json.value
+      .filter(person => person.mail.endsWith(sails.config.app.general.domain))
+      .map(function(person) {
+        return {
+          msid: person.id,
+          name: person.displayName,
+          jobTitle: (person.jobTitle) ? person.jobTitle : null,
+          email: person.mail.toLowerCase(),
+          image: apiURL + usersPath + pathSeparator + person.id + photoPath,
+          location: null,
+          area: null
         }
+      })
+    return users
+  },
+
+  // Find relevant people to a token holder
+  // params: token (string) - MS Graph Access token
+  relevantPeople: async function(token) {
+    const queryURL = apiURL + peoplePath + _.join(relevantUsersParameters, paramSeparator);
+    const response = await fetch(queryURL, {
+      method: 'get',
+      headers: {
+        "Authorization": token,
+      },
+    });
+    const json = await response.json();
+
+    if (json.error) {
+      handleError(json.error)
+    }
+
+    // Clean up the results, and returns only users with endava emails
+    return json.value
+      .filter(person => person.scoredEmailAddresses[0].relevanceScore > scoreFilterHigherThan)
+      .map(function(person) {
+        return {
+          msid: person.id,
+          name: person.displayName,
+          jobTitle: person.jobTitle,
+          email: person.scoredEmailAddresses[0].address.toLowerCase(),
+          //relevance: person.scoredEmailAddresses[0].relevanceScore,
+          image: apiURL + usersPath + pathSeparator + person.id + photoPath
+        }
+      })
+  }
 };
