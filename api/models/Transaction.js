@@ -8,9 +8,9 @@
 const welcomeToAppStr = "Welcome to RankMe!"
 const feedbackGivenToStr = "Feedback given to "
 const feedbackReceivedFromStr = "Feedback received from "
-const likedFeedbackString = "You've got a push from "
-const positiveTone = "(Positive) "
-const negativeTone = "(Improvement) "
+const likedFeedbackString = "You've got a boots from "
+const positiveTone = "(Recognition) "
+const negativeTone = "(Advise) "
 const flaggedGivenFeedbackRemoved = "A feedback you gave was removed because it was innapropiate or fake"
 const flaggedReceivedFeedbackRemoved = "A feedback you received was removed because it was innapropiate or fake"
 
@@ -39,6 +39,13 @@ module.exports = {
     }
   },
 
+  // Transaction points
+  afterCreate: function(transaction, proceed) {
+    console.log("Transaction created")
+    User.updateScore(transaction.user)
+    return proceed();
+  },
+
   // Award points to the new user
   signup: async function(user) {
     await this.create({
@@ -47,7 +54,7 @@ module.exports = {
       points: sails.config.app.scoring.signupBonus,
       type: bonusStr,
       value: null
-    })
+    }).fetch()
   },
 
   // Award points to the originating and receiving users
@@ -64,7 +71,7 @@ module.exports = {
       points: sails.config.app.scoring.feedbackGiven,
       type: bonusStr,
       value: null
-    })
+    }).fetch()
 
     // Points to destination user
     let feedbackTone = (feedback.isPositive) ? positiveTone : negativeTone
@@ -74,7 +81,7 @@ module.exports = {
       points: (feedback.isPositive) ? sails.config.app.scoring.positiveFeedbackReceived : sails.config.app.scoring.negativeFeedbackReceived,
       type: pointsStr,
       value: feedback.value
-    })
+    }).fetch()
 
   },
 
@@ -90,7 +97,7 @@ module.exports = {
         points: sails.config.app.scoring.likeReceived,
         type: bonusStr,
         value: fb.value
-      })
+      }).fetch()
     }
   },
 
@@ -111,7 +118,7 @@ module.exports = {
         points: sails.config.app.scoring.feedbackGiven * -1,
         type: bonusStr,
         value: null
-      })
+      }).fetch()
 
       // Points to destination user
       await this.create({
@@ -120,7 +127,7 @@ module.exports = {
         points: (fb.isPositive) ? sails.config.app.scoring.positiveFeedbackReceived * -1 : sails.config.app.scoring.negativeFeedbackReceived * -1,
         type: pointsStr,
         value: fb.value
-      })
+      }).fetch()
     }
 
   },

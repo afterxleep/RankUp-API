@@ -9,11 +9,17 @@ module.exports = {
 
   exits: {},
 
+  // NOTE- DO NOT USE!!!!!!
+  // This shit is crap and needs a complete refactor!
+
   fn: async function(inputs) {
 
-    var updateRank = async function(user, rank) {
+    // Update the rank for a user
+    var updateRankAndPoints = async function(user, rank, points) {
+      console.log("updating" + user)
       await User.update(user.toString()).set({
-        rank: rank
+        rank: rank,
+        score: points
       })
 
     }
@@ -41,8 +47,14 @@ module.exports = {
         var rank = 1
 
         // Loop over existing users and give them the ranking
+        let usersToUpdate = []
         results.forEach(function(user) {
-          updateRank(user._id.user, rank)
+          let u = {
+            id: user._id.user,
+            rank: rank,
+            score: user.points
+          }
+          updateRankAndPoints(user._id.user, rank, user.points)
           rank++
         })
       });

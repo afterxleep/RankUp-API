@@ -46,8 +46,11 @@ module.exports = {
     delete inputs.limit
 
     // If the user is requesting private feedback, override the 'to' with his
+    // Otherwise always show public
     if (inputs.isPublic == false) {
       inputs.to = this.req.user.id
+    } else {
+      inputs.isPublic = true
     }
 
     // Remove deleted feedbacks
